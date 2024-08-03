@@ -3,17 +3,18 @@
 
 #include "CommandClasses/BaseCommand.h"
 
-class Facade
+namespace ControlSystem
 {
-public:
-    static void initialize();
-
-    static void execute(BaseCommand* command)
+    class Facade
     {
-        command->Execute();
-    }
-};
+    public:
+        static void initialize();
 
+        static inline void execute(Actions::BaseCommand* command) { command->Execute(); }
+    };
+}
+
+#include "Facade.hpp"
 
 #endif
 

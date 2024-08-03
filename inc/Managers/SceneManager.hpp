@@ -11,9 +11,9 @@ std::shared_ptr<Scene> SceneManager::get_scene()
     return scene;
 }
 
-void SceneManager::set_camera(std::shared_ptr<Camera> camera2)
+void SceneManager::set_camera(std::shared_ptr<Camera> new_camera)
 {
-    camera = camera2;
+    camera = new_camera;
 }
 
 void SceneManager::add_object(std::shared_ptr<AbstractObject> object)

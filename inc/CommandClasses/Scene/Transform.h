@@ -3,6 +3,7 @@
 
 #include "AbstractObject.h"
 #include "CommandClasses/BaseCommand.h"
+#include <memory>
 
 
 namespace Actions
@@ -28,12 +29,11 @@ namespace Actions
         using Action = void (*)(size_t);
         public:
             RemoveObject() = delete;
-            RemoveObject(std::shared_ptr<AbstractObject>& object, size_t id);
+            explicit RemoveObject(size_t id);
             ~RemoveObject() = default;
 
             void Execute() override;
         private:
-            std::shared_ptr<AbstractObject>& obj;
             size_t id;
             Action method;
         };
@@ -58,7 +58,7 @@ namespace Actions
         using Action = std::vector<std::shared_ptr<AbstractObject>> (*)();
         public:
             GetObjects() = delete;
-            GetObjects(std::shared_ptr<AbstractObject>& object);
+            explicit GetObjects(std::shared_ptr<AbstractObject>& object);
             ~GetObjects() = default;
 
             void Execute() override;
@@ -71,10 +71,12 @@ namespace Actions
         {
         using Action = void (*)();
         public:
-            ClearScene() = default;
+            ClearScene();
             ~ClearScene() = default;
 
             void Execute() override;
+        private:
+            Action method;
         };
 
         class AddCamera : public BaseCommand
@@ -105,13 +107,13 @@ namespace Actions
             Action method;
         };
         
-        class SetCamera : public BaseCommand
+        class SetMainCamera : public BaseCommand
         {
         using Action = void (*)(size_t);
         public:
-            SetCamera() = delete;
-            explicit SetCamera(size_t id);
-            ~SetCamera() = default;
+            SetMainCamera() = delete;
+            explicit SetMainCamera(size_t id);
+            ~SetMainCamera() = default;
 
             void Execute() override;
         private:
@@ -121,16 +123,17 @@ namespace Actions
 
         class GetMainCamera : public BaseCommand
         {
-        using Action = std::shared_ptr<Camera> (*)();
+        using Action = std::shared_ptr<Camera> (*)(size_t);
         public:
             GetMainCamera() = delete;
-            explicit GetMainCamera(size_t id);
+            GetMainCamera(std::shared_ptr<Camera>& obj, size_t id);
             ~GetMainCamera() = default;
 
             void Execute() override;
         private:
             Action method;
             size_t id;
+            std::shared_ptr<Camera>& obj;
         };
     }
 }

@@ -11,6 +11,17 @@ set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(INC_DIR "${PROJECT_SOURCE_DIR}/inc")
 set(LIB_DIR "${PROJECT_SOURCE_DIR}/dependencies")
 
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+#remote name - curse
+
 
 # --- START PROJECT ---
 
