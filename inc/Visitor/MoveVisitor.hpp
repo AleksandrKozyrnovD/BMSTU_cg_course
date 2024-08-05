@@ -15,18 +15,20 @@ void MoveVisitor::visit(Model& obj)
 {
     glm::mat4x4 transform = glm::mat4x4(1.0f);
     transform = glm::translate(transform, this->coordinate);
-    for (Facet& facet : obj.model->get_surfaces())
-    {
-        facet.transform(transform);       
-    }
-    obj.center.position = transform * obj.center.position;
+    obj.transform = transform * obj.transform;
+    // for (Facet& facet : obj.model->get_surfaces())
+    // {
+    //     facet.transform(transform);       
+    // }
+    // obj.center = transform * glm::vec4(obj.center, 1.0f);
+    // obj.model->get_center() = transform * glm::vec4(obj.model->get_center(), 1.0f);
 }
 
 void MoveVisitor::visit(Camera& obj)
 {
     glm::mat4x4 transform = glm::mat4x4(1.0f);
     transform = glm::translate(transform, this->coordinate);
-    obj.center.position = transform * obj.center.position;
+    obj.center = transform * glm::vec4(obj.center, 1.0f);
 }
 
 void MoveVisitor::visit(CompositeObject& obj)

@@ -1,6 +1,5 @@
 #include "Loader/Readers/AbstractFacetReader.h"
 #include "ModelType/SurfaceModel.h"
-#include "Point.h"
 #include "SurfaceBuilder.h"
 #include <memory>
 
@@ -35,7 +34,7 @@ bool SurfaceBuilder::create_facets()
 
 bool SurfaceBuilder::align_facets()
 {
-    Point center = this->implementation->get_center();
+    glm::vec3 center = this->implementation->get_center();
     auto facets = this->implementation->get_surfaces();
 
     for (auto &facet : facets)

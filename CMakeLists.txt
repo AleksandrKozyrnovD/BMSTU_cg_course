@@ -47,8 +47,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Loader")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Scene")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Managers")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/UserInterface")
-target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Engine")
-
+target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Canvas")
+target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Drawer")
 
 
 

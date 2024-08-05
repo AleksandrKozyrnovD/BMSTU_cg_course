@@ -16,15 +16,15 @@ UncoloredTXTFacetReader::~UncoloredTXTFacetReader()
 
 Facet UncoloredTXTFacetReader::read_facet()
 {
-    float x, y, z, w;
-    fscanf(file, "%f %f %f %f", &x, &y, &z, &w);
-    Point A(glm::vec4(x, y, z, w));
+    float x, y, z;
+    fscanf(file, "%f %f %f", &x, &y, &z);
+    glm::vec3 A(x, y, z);
 
-    fscanf(file, "%f %f %f %f", &x, &y, &z, &w);
-    Point B(glm::vec4(x, y, z, w));
+    fscanf(file, "%f %f %f", &x, &y, &z);
+    glm::vec3 B(x, y, z);
 
-    fscanf(file, "%f %f %f %f", &x, &y, &z, &w);
-    Point C(glm::vec4(x, y, z, w));
+    fscanf(file, "%f %f %f", &x, &y, &z);
+    glm::vec3 C(x, y, z);
 
     return Facet(A, B, C);
 }

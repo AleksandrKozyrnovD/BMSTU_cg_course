@@ -1,9 +1,7 @@
 #ifndef __PLANE_H__
 #define __PLANE_H__
 
-#include "Point.h"
-#include "Vector.h"
-
+#include <glm/vec3.hpp>
 
 class Surface
 {
@@ -12,21 +10,21 @@ public:
     explicit Surface(const Surface& other);
     Surface(Surface&& other) noexcept;
     
-    Surface(const Point& A, const Point& B, const Point& C) noexcept;
-    Surface(const Point& A, const Point& B, const Point& C, bool direction) noexcept;
+    Surface(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) noexcept;
+    Surface(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction) noexcept;
 
     ~Surface() = default;
 
     Surface& operator=(const Surface& other);
 
-    const Vector& get_normal() const;
-    const Vector& operator*() const;
+    const glm::vec3& get_normal() const;
+    const glm::vec3& operator*() const;
 
     void change_direction();
 
 protected:
-    Point A, B, C;
-    Vector normal;
+    glm::vec3 A, B, C;
+    glm::vec3 normal;
 };
 
 #include "Plane.hpp"

@@ -20,14 +20,14 @@ SurfaceModel& SurfaceModel::operator=(const SurfaceModel& other)
 SurfaceModel::SurfaceModel(const std::list<Facet>& surfaces)
     : surfaces(surfaces)
 {
-    center.position = { 0.0f, 0.0f, 0.0f, 0.0f };
+    this->center = { 0.0f, 0.0f, 0.0f };
 
     for (const Facet& facet : surfaces)
     {
-        center.position += facet.get_center().position;
+        this->center += facet.get_center();
     }
 
-    center.position /= surfaces.size();
+    this->center /= surfaces.size();
 }
 
 SurfaceModel& SurfaceModel::operator=(SurfaceModel&& other) noexcept
@@ -47,13 +47,13 @@ const std::list<Facet>& SurfaceModel::get_surfaces() const
     return surfaces;
 }
 
-Point& SurfaceModel::get_center()
+glm::vec3& SurfaceModel::get_center()
 {
     return center;
 }
 
-Point SurfaceModel::get_center() const
+glm::vec3 SurfaceModel::get_center() const
 {
-    return Point(this->center);
+    return glm::vec3(this->center);
 }
 

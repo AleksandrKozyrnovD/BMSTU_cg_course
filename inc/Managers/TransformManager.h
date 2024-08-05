@@ -6,7 +6,7 @@
 
 namespace ControlSystem
 {
-    using object_ptr = std::shared_ptr<AbstractObject>;
+    using object_ptr = std::shared_ptr<AbstractObject>&;
 
     class TransformManager : public BaseManager
     {

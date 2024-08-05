@@ -5,11 +5,11 @@
 #include <glm/glm/gtx/rotate_vector.hpp>
 #include <glm/glm/mat4x4.hpp>
 
-Facet::Facet(const Point& A, const Point& B, const Point& C) noexcept
+Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) noexcept
     : Surface(A, B, C)
 {}
 
-Facet::Facet(const Point& A, const Point& B, const Point& C, bool direction) noexcept
+Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction) noexcept
     : Surface(A, B, C, direction)
 {}
 
@@ -34,22 +34,18 @@ Facet& Facet::operator=(Facet&& other) noexcept
 }
 
 
-void Facet::move(const glm::vec4& vector)
+void Facet::move(const glm::vec3& vector)
 {
-    A.position += vector;
-    B.position += vector;
-    C.position += vector;
+    A += vector;
+    B += vector;
+    C += vector;
 }
 
 void Facet::scale(const glm::vec3& scale)
 {
-    glm::mat4x4 matrix = glm::mat4x4(1.0f);
-
-    matrix = glm::scale(matrix, scale);
-
-    A.position = matrix * A.position;
-    B.position = matrix * B.position;
-    C.position = matrix * C.position;
+    A *= scale;
+    B *= scale;
+    C *= scale;
 }
 
 void Facet::scale(float scalar)
@@ -68,31 +64,31 @@ void Facet::rotate(const glm::vec3 angles)
     matrix = glm::rotate(matrix, glm::radians(angles.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     //apply matrix
-    A.position = matrix * A.position;
-    B.position = matrix * B.position;
-    C.position = matrix * C.position;
+    A = matrix * glm::vec4(A, 1.0f);
+    B = matrix * glm::vec4(B, 1.0f);
+    C = matrix * glm::vec4(C, 1.0f);
 }
 
-Point Facet::get_center() const
+glm::vec3 Facet::get_center() const
 {
-    return (A.position + B.position + C.position) / 3.0f;
+    return (A + B + C) / 3.0f;
 }
 
 void Facet::transform(const glm::mat4x4& matrix)
 {
-    A.position = matrix * A.position;
-    B.position = matrix * B.position;
-    C.position = matrix * C.position;
+    A = matrix * glm::vec4(A, 1.0f);
+    B = matrix * glm::vec4(B, 1.0f);
+    C = matrix * glm::vec4(C, 1.0f);
 }
 
-void Facet::fix_direction(const Point& center)
+void Facet::fix_direction(const glm::vec3& center)
 {
     //get vector from center to A
     //if vector from center to A kinda looking towards normal, do nothing
     //else flip normal
-    glm::vec3 center_A = center.position - A.position;
+    glm::vec3 center_A = center - A;
 
-    if (glm::dot(center_A, this->get_normal().direction) < 0.0f)
+    if (glm::dot(center_A, this->normal) < 0.0f)
     {
         this->change_direction();
     }

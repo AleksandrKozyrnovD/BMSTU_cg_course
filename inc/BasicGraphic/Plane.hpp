@@ -1,5 +1,4 @@
-#include "BasicGraphic/Plane.h"
-#include "Vector.h"
+#include "Plane.h"
 
 #include <glm/glm/geometric.hpp>
 
@@ -11,38 +10,38 @@ Surface::Surface(Surface&& other) noexcept
 : A(std::move(other.A)), B(std::move(other.B)), C(std::move(other.C)), normal(std::move(other.normal))
 {}
 
-Surface::Surface(const Point& A, const Point& B, const Point& C) noexcept
+Surface::Surface(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) noexcept
 : A(A), B(B), C(C)
 {
-    Vector AB = Vector(B.position - A.position);
-    Vector AC = Vector(C.position - A.position);
+    glm::vec3 AB = B - A;
+    glm::vec3 AC = C - A;
 
-    this->normal = (AB & AC).normalize();
+    this->normal = glm::normalize(glm::cross(AB, AC));
 }
 
 
-Surface::Surface(const Point& A, const Point& B, const Point& C, bool direction) noexcept
+Surface::Surface(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction) noexcept
 : A(A), B(B), C(C)
 {
-    Vector AB = Vector(B.position - A.position);
-    Vector AC = Vector(C.position - A.position);
+    glm::vec3 AB = glm::vec3(B - A);
+    glm::vec3 AC = glm::vec3(C - A);
 
     if (direction)
     {
-        this->normal = (AB & AC).normalize();
+        this->normal = glm::normalize(glm::cross(AB, AC));
     }
     else
     {
-        this->normal = (AB & AC).normalize() * (-1.0f);
+        this->normal = glm::normalize(glm::cross(AB, AC)) * (-1.0f);
     }
 }
 
-const Vector& Surface::get_normal() const
+const glm::vec3& Surface::get_normal() const
 {
     return this->normal;
 }
 
-const Vector& Surface::operator*() const
+const glm::vec3& Surface::operator*() const
 {
     return this->get_normal();
 }

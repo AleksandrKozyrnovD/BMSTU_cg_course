@@ -4,8 +4,10 @@
 #include <memory>
 #include <vector>
 
-#include "../Visitor/AbstractVisitor.h"
-#include "../BasicGraphic/Point.h"
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+
+#include "AbstractVisitor.h"
 
 
 
@@ -31,13 +33,14 @@ public:
 
     size_t get_id() { return this->id; }
 
-    Point get_center() const { return Point(this->center); }
-    Point& get_center() { return this->center; }
+    glm::vec3 get_center() const { return glm::vec3(this->center); }
+    glm::vec3& get_center() { return this->center; }
 
 protected:
     std::size_t id;
     static std::size_t nextid;
-    Point center;
+    glm::vec3 center;
+    glm::mat4x4 transform = glm::mat4x4(1.0f);
 };
 
 #include "AbstractObject.hpp"

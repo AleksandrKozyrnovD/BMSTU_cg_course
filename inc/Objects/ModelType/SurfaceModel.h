@@ -20,12 +20,12 @@ public:
     std::list<Facet>& get_surfaces() override;
     const std::list<Facet>& get_surfaces() const override;
 
-    Point& get_center() override;
-    Point get_center() const override;
+    glm::vec3& get_center() override;
+    glm::vec3 get_center() const override;
 
 
 protected:
-    Point center;
+    glm::vec3 center;
     std::list<Facet> surfaces;
 };
 

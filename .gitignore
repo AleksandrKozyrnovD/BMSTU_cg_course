@@ -4,3 +4,4 @@ build/
 .cache/
 *.exe
 *.o
+imgui.ini

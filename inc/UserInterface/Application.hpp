@@ -1,9 +1,12 @@
 #include "Application.h"
+#include "Canvas.h"
 #include "ImguiInterface.h"
 #include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include <SDL_render.h>
 #include <SDL_timer.h>
+#include <memory>
+
 
 
 Application::Application()
@@ -25,65 +28,33 @@ Application::~Application()
     SDL_Quit();
 }
 
-// void drawline(SDL_Renderer *renderer, int x1, int y1, int x2, int y2)
-// {
-//     SDL_SetRenderDrawColor(renderer,255, 255, 255, 255);
 
-//     int x = x1;
-//     int y = y1;
-//     int dx = abs(x2 - x1);
-//     int dy = abs(y2 - y1);
-//     int sx = x2 > x1 ? 1 : -1;
-//     int sy = y2 > y1 ? 1 : -1;
-//     bool swap = false;
-//     if (dy > dx)
-//     {
-//         swap = true;
-//         int t = dx;
-//         dx = dy;
-//         dy = t;
-//     }
+#include "Camera.h"
+#include "AbstractObject.h"
+#include "DrawVisitor.h"
+#include "LoadManager.h"
+#include "Builders/SurfaceBuilder.h"
+#include "TransformManager.h"
 
-//     int dy2 = 2 * dy;
-//     int dx2 = 2 * dx;
-//     int error = dy2 - dx;
-
-//     for (int i = 0; i < dx; i++)
-//     {
-//         SDL_RenderDrawPoint(renderer, x, y);
-//         while (error >= 0)
-//         {
-//             if (!swap)
-//             {
-//                 y += sy;
-//             }
-//             else
-//             {
-//                 x += sx;
-//             }
-//             error -= dx2;
-//         }
-//         if (!swap)
-//         {
-//             x += sx;
-//         }
-//         else
-//         {
-//             y += sy;
-//         }
-//         error += dy2;
-//     }
-
-//     // SDL_RenderPresent(renderer);
-
-//     return;
-// }
 
 int Application::Application::run() {
     if (m_exit_status == 1)
     {
         return m_exit_status;
     }
+
+    glm::vec3 center = glm::vec3(0, 0, -1);
+    glm::vec3 up = glm::vec3(0, 1, 0);
+    glm::vec3 forward = glm::vec3(0, 0, -1);
+    std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
+    
+    DrawVisitor visitor(camera);
+
+    std::shared_ptr<AbstractObject> obj =
+    ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt");
+
+    Graphics::SDLCanvas::set_renderer(m_window->get_native_renderer());
+
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -112,9 +83,15 @@ int Application::Application::run() {
         ImGui::Render();
     
 
-        SDL_SetRenderDrawColor(m_window->get_native_renderer(),100, 100, 100, 255);
+        SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
         SDL_RenderClear(m_window->get_native_renderer());
         //Risovanie zdes
+        obj->accept(std::make_shared<DrawVisitor>(visitor));
+
+        ControlSystem::TransformManager::rotate(obj, 0.01, 0.01, 0.01);
+        ControlSystem::TransformManager::move(obj, 0, 0, -0.0001);
+
+        
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->m_window->get_native_renderer());
         SDL_RenderPresent(m_window->get_native_renderer());
     }

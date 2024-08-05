@@ -1,6 +1,7 @@
 #ifndef __MODEL_H__
 #define __MODEL_H__
 
+#include "DrawVisitor.h"
 #include "Drawable.h"
 #include "ModelType/AbstractSurfaceModel.h"
 #include <memory>
@@ -11,6 +12,7 @@ class Model : public Drawable
     friend class MoveVisitor;
     friend class RotateVisitor;
     friend class ScaleVisitor;
+    friend class DrawVisitor;
     friend class DrawVisitor;
 public:
     Model() = default;

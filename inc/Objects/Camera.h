@@ -2,8 +2,9 @@
 #define __CAMERA_H__
 
 #include "Drawable.h"
-#include "../BasicGraphic/Point.h"
-#include "Vector.h"
+// #include "Point.h"
+
+#include "glm/mat4x4.hpp"
 
 class Camera : public Undrawable
 {
@@ -14,19 +15,25 @@ class Camera : public Undrawable
 public:
     Camera() = default;
     Camera(double x, double y, double z);
-    Camera(const Point& center);
-    Camera(const Point& center, const Vector& up, const Vector& forward);
+    Camera(const glm::vec3& center);
+    Camera(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward);
     ~Camera() = default;
 
 
     void accept(std::shared_ptr<AbstractVisitor> visitor) override;
 
-public:
-    // Point center;
+    glm::mat4x4 get_view_matrix() const;
 
-    Vector up;
-    Vector forward;
-    Vector right;
+    glm::mat4x4 get_perspective_matrix() const;
+
+public:
+    // glm::vec3 center;
+
+    glm::vec3 up;
+    glm::vec3 forward;
+    glm::vec3 right;
+
+    float fov = 45;
 };
 
 #include "Camera.hpp"
