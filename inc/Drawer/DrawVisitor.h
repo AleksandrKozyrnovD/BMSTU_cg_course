@@ -22,6 +22,9 @@ protected:
 
 private:
     void draw_facet(const Facet& facet);
+    void project_point(glm::vec3& point);
+
+
     glm::mat4x4 transform;
 };
 

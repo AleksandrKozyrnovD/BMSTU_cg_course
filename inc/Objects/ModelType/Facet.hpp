@@ -67,6 +67,8 @@ void Facet::rotate(const glm::vec3 angles)
     A = matrix * glm::vec4(A, 1.0f);
     B = matrix * glm::vec4(B, 1.0f);
     C = matrix * glm::vec4(C, 1.0f);
+
+    this->normal = glm::normalize(matrix * glm::vec4(this->normal, 0.0f));
 }
 
 glm::vec3 Facet::get_center() const
@@ -79,6 +81,8 @@ void Facet::transform(const glm::mat4x4& matrix)
     A = matrix * glm::vec4(A, 1.0f);
     B = matrix * glm::vec4(B, 1.0f);
     C = matrix * glm::vec4(C, 1.0f);
+
+    this->normal = glm::normalize(matrix * glm::vec4(this->normal, 0.0f));
 }
 
 void Facet::fix_direction(const glm::vec3& center)
