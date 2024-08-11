@@ -35,6 +35,7 @@ Application::~Application()
 #include "LoadManager.h"
 #include "Builders/SurfaceBuilder.h"
 #include "TransformManager.h"
+#include "Light.h"
 
 
 int Application::Application::run() {
@@ -43,9 +44,9 @@ int Application::Application::run() {
         return m_exit_status;
     }
 
-    glm::vec3 center = glm::vec3(0, 0, -1);
+    glm::vec3 center = glm::vec3(0, 0, -100);
     glm::vec3 up = glm::vec3(0, 1, 0);
-    glm::vec3 forward = glm::vec3(0, 0, 1);
+    glm::vec3 forward = glm::vec3(0, 0, -1);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
 
     std::shared_ptr<AbstractObject> obj2 = std::static_pointer_cast<AbstractObject>(camera);
@@ -79,6 +80,36 @@ int Application::Application::run() {
             {
                 this->stop();
             }
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.scancode == SDL_SCANCODE_W)
+                    {
+                        glm::vec3 v = camera->forward * 1.0f;
+                        ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
+                    }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_S)
+                    {
+                        glm::vec3 v = camera->forward * 1.0f;
+                        ControlSystem::TransformManager::move(obj2, -v.x, -v.y, -v.z);
+                    }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_A)
+                    {
+                        glm::vec3 v = camera->right * 1.0f;
+                        ControlSystem::TransformManager::move(obj2, -v.x, -v.y, -v.z);
+                    }
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_D)
+                    {
+                        glm::vec3 v = camera->right * 1.0f;
+                        ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
+                    }
+                    break;
+                case SDL_KEYUP:
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         ImguiInterface::draw_interface();
@@ -90,7 +121,7 @@ int Application::Application::run() {
         //Risovanie zdes
         obj->accept(std::make_shared<DrawVisitor>(visitor));
 
-        // ControlSystem::TransformManager::rotate(obj, 0.01, 0.01, 0.01);
+        // ControlSystem::TransformManager::rotate(obj2, 0.01, 0.01, 0.01);
 
         
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->m_window->get_native_renderer());

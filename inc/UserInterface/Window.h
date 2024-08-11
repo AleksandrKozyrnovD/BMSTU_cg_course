@@ -18,8 +18,8 @@ public:
     struct Settings
     {
         std::string title;
-        const int width{1280};
-        const int height{720};
+        int width{1280};
+        int height{720};
     };
 
   explicit Window(const Settings& settings);

@@ -4,6 +4,7 @@
 class CompositeObject;
 class Model;
 class Camera;
+class Light;
 
 
 class AbstractVisitor
@@ -15,6 +16,7 @@ public:
     virtual void visit(Model& obj) = 0;
     virtual void visit(Camera& obj) = 0;
     virtual void visit(CompositeObject& obj) = 0;
+    virtual void visit(Light& obj) = 0;
 };
 
 

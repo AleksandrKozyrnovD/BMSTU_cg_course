@@ -25,12 +25,10 @@ void ScaleVisitor::visit(Model& obj)
 }
 
 void ScaleVisitor::visit(Camera& obj)
-{
-    // glm::mat4x4 transform = glm::mat4x4(1.0f);
-    // transform = glm::scale(transform, this->coordinate);
+{}
 
-    // obj.center = transform * glm::vec4(obj.center, 1.0f);
-}
+void ScaleVisitor::visit(Light& obj)
+{}
 
 void ScaleVisitor::visit(CompositeObject& obj)
 {

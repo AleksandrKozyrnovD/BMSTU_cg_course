@@ -16,6 +16,7 @@ public:
     void visit(Model& obj) override;
     void visit(Camera& obj) override;
     void visit(CompositeObject& obj) override;
+    void visit(Light& obj) override;
 };
 
 #include "RotateVisitor.hpp"

@@ -3,6 +3,7 @@
 
 #include "AbstractVisitor.h"
 #include "Canvas.h"
+#include "Window.h"
 #include "ModelType/Facet.h"
 #include "Camera.h"
 
@@ -16,15 +17,13 @@ public:
     void visit(Model& obj) override;
     void visit(Camera& obj) override;
     void visit(CompositeObject& obj) override;
+    void visit(Light& obj) override;
 
 protected:
     std::shared_ptr<Camera>& camera;
 
 private:
-    void draw_facet(const Facet& facet);
-    void project_point(glm::vec3& point);
-
-
+    void rasterize_facet(const Facet& facet);
     glm::mat4x4 transform;
 };
 

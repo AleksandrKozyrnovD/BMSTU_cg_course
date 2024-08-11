@@ -4,6 +4,7 @@
 #include "../Objects/Model.h"
 #include "../Objects/Camera.h"
 #include "../Objects/CompositeObject.h"
+#include "Light.h"
 #include "glm/glm/ext/matrix_transform.hpp"
 #include "glm/glm/ext/vector_float4.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
@@ -49,6 +50,20 @@ void RotateVisitor::visit(Model& obj)
 }
 
 void RotateVisitor::visit(Camera& obj)
+{
+    glm::vec3 rotator = this->coordinate;
+    glm::mat4x4 matrix = glm::mat4x4(1.0f);
+    matrix = glm::rotate(matrix, glm::radians(rotator.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    matrix = glm::rotate(matrix, glm::radians(rotator.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    matrix = glm::rotate(matrix, glm::radians(rotator.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+
+    obj.up = glm::normalize(matrix * glm::vec4(obj.up, 0.0f));
+    obj.forward = glm::normalize(matrix * glm::vec4(obj.forward, 0.0f));
+    obj.right = glm::normalize(matrix * glm::vec4(obj.right, 0.0f));
+}
+
+void RotateVisitor::visit(Light& obj)
 {
     glm::vec3 rotator = this->coordinate;
     glm::mat4x4 matrix = glm::mat4x4(1.0f);

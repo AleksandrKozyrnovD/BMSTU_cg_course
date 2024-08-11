@@ -27,8 +27,6 @@ public:
     glm::mat4x4 get_perspective_matrix() const;
 
 public:
-    // glm::vec3 center;
-
     glm::vec3 up;
     glm::vec3 forward;
     glm::vec3 right;
