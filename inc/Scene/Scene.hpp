@@ -1,6 +1,10 @@
 #include "Scene.h"
 
-Scene::Scene() {}
+Scene::Scene()
+{
+    this->objects = std::list<std::shared_ptr<AbstractObject>>();
+    this->cameras = std::list<iterator>();
+}
 
 
 void Scene::add_object(const std::shared_ptr<AbstractObject> obj)

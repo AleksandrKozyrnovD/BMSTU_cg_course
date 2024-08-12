@@ -1,10 +1,8 @@
 #ifndef __MODEL_H__
 #define __MODEL_H__
 
-#include "DrawVisitor.h"
 #include "Drawable.h"
 #include "ModelType/AbstractSurfaceModel.h"
-#include <memory>
 
 
 class Model : public Drawable

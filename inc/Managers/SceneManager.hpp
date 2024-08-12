@@ -154,10 +154,10 @@ std::vector<std::size_t> SceneManager::get_camera_ids()
 //     return scene;
 // }
 
-// void SceneManager::set_scene(std::shared_ptr<Scene> scene)
-// {
-//     scene = scene;
-// }
+void SceneManager::set_scene(std::shared_ptr<Scene> scene)
+{
+    SceneManager::scene = scene;
+}
 
 // std::shared_ptr<Camera>& SceneManager::get_camera()
 // {

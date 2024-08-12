@@ -1,10 +1,13 @@
 #include "Application.h"
 #include "Canvas.h"
 #include "ImguiInterface.h"
+#include "SceneManager.h"
 #include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
+#include <SDL_events.h>
 #include <SDL_render.h>
 #include <SDL_timer.h>
+#include <SDL_video.h>
 #include <memory>
 
 
@@ -31,7 +34,7 @@ Application::~Application()
 
 #include "Camera.h"
 #include "AbstractObject.h"
-#include "DrawVisitor.h"
+#include "DrawManager.h"
 #include "LoadManager.h"
 #include "Builders/SurfaceBuilder.h"
 #include "TransformManager.h"
@@ -44,7 +47,9 @@ int Application::Application::run() {
         return m_exit_status;
     }
 
-    glm::vec3 center = glm::vec3(0, 0, -100);
+    float dx, dy;
+
+    glm::vec3 center = glm::vec3(0, 0, -2);
     glm::vec3 up = glm::vec3(0, 1, 0);
     glm::vec3 forward = glm::vec3(0, 0, -1);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
@@ -59,12 +64,22 @@ int Application::Application::run() {
     Graphics::SDLCanvas::set_renderer(m_window->get_native_renderer());
 
 
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    ControlSystem::SceneManager::set_scene(scene);
+
+    ControlSystem::SceneManager::set_camera(camera);
+    ControlSystem::SceneManager::add_object(obj);
+
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io{ImGui::GetIO()};
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    // SDL_SetWindowInputFocus(this->m_window->get_native_window());
+    SDL_RaiseWindow(m_window->get_native_window());
 
     ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
     ImGui_ImplSDLRenderer2_Init(m_window->get_native_renderer());
@@ -104,7 +119,10 @@ int Application::Application::run() {
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     break;
-                case SDL_KEYUP:
+                case SDL_MOUSEMOTION:
+                    dx = event.motion.xrel;
+                    dy = event.motion.yrel;
+                    ControlSystem::TransformManager::rotate(obj2, dy / 10.0f,-dx / 10.0f, 0.0f);
                     break;
 
                 default:
@@ -121,7 +139,8 @@ int Application::Application::run() {
         //Risovanie zdes
         obj->accept(std::make_shared<DrawVisitor>(visitor));
 
-        // ControlSystem::TransformManager::rotate(obj2, 0.01, 0.01, 0.01);
+        ControlSystem::TransformManager::rotate(obj, 0.1, 0.1, 0.1);
+        ControlSystem::DrawManager::draw_scene_no_lights();
 
         
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->m_window->get_native_renderer());

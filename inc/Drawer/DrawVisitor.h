@@ -6,6 +6,8 @@
 #include "Window.h"
 #include "ModelType/Facet.h"
 #include "Camera.h"
+#include "Slope.h"
+
 
 class DrawVisitor : public AbstractVisitor
 {
@@ -24,6 +26,8 @@ protected:
 
 private:
     void rasterize_facet(const Facet& facet);
+    void draw_scanline(float y, GLMSlope& A, GLMSlope& B);
+
     glm::mat4x4 transform;
 };
 
