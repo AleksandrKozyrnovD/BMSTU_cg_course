@@ -2,6 +2,7 @@
 #include "DrawVisitor.h"
 
 #include "Buffer.inl"
+#include "glm/ext/matrix_clip_space.hpp"
 
 
 DrawVisitor::DrawVisitor(std::shared_ptr<Camera>& camera)
@@ -11,6 +12,10 @@ DrawVisitor::DrawVisitor(std::shared_ptr<Camera>& camera)
 
 void DrawVisitor::rasterize_facet(const Facet& facet)
 {
+    /*
+    https://bisqwit.iki.fi/jutut/kuvat/programming_examples/polytut/ <---- tutorial and prime example from where i got code
+    */
+
     glm::mat4x4 model = this->transform;
     glm::mat4x4 projection = camera->get_perspective_matrix();
     glm::mat4x4 view = camera->get_view_matrix();
@@ -40,6 +45,7 @@ void DrawVisitor::rasterize_facet(const Facet& facet)
     p1 = glm::vec3(glm::project(p1, glm::mat4x4(1.0f), projection, viewport));
     p2 = glm::vec3(glm::project(p2, glm::mat4x4(1.0f), projection, viewport));
 
+
     //apply z
     p0.z = z0;
     p1.z = z1;
@@ -62,7 +68,7 @@ void DrawVisitor::rasterize_facet(const Facet& facet)
         std::swap(p1, p2);
     }
     
-    //refuse to draw triangle if triangle is arealess
+    //refuse to draw triangle if triangle is arealess. Assuming here that facets are superthin
     if (p0.y == p2.y)
     {
         return;
@@ -99,11 +105,12 @@ void DrawVisitor::rasterize_facet(const Facet& facet)
             // Slope(x1, x2, (endy = y2) - y1);
         }
         //draw scanline
-        this->draw_scanline(y, sides[0], sides[1]);
+        this->draw_scanline(y, sides[0], sides[1], facet.color);
     }
 }
 
-void DrawVisitor::draw_scanline(float y, GLMSlope& A, GLMSlope& B)
+#include <iostream>
+void DrawVisitor::draw_scanline(float y, GLMSlope& A, GLMSlope& B, uint32_t color)
 {
     glm::vec3 p0 = A.get();
     glm::vec3 p1 = B.get();
@@ -112,21 +119,20 @@ void DrawVisitor::draw_scanline(float y, GLMSlope& A, GLMSlope& B)
     int x0 = p0.x;
     int x1 = p1.x;
 
+    if (x0 < 0 && x1 < 0) return;
+    if (y < 0) y = 0;
+    if (y > 720) y = 719;
+    if (x0 < 0) x0 = 0;
+    if (x1 > 1280) x1 = 1279;
+
     for (; x0 < x1; ++x0)
     {
         //check if pixel inside viewframe. 1280x720
-        if (x0 < 0 || x0 >= 1280)
-        {
-            continue;
-        }
-        if (y < 0 || y >= 720)
-        {
-            break;
-        }
 
-        if (ControlSystem::Buffer::depth_buffer[y][x0] < p0.z && p0.z > 0.1f) //facet is not behind camera so > 0.1f
+        if (ControlSystem::Buffer::depth_buffer[y][x0] > p0.z && p0.z > 0.1f) //facet is not behind camera so > 0.1f
         {
-            ControlSystem::Buffer::frame_buffer[y][x0] = Color::RED;
+            // std::cout << "new z value: " << p0.z << " for (x,y): (" << x0 << "," << y << "), and color: " << color <<std::endl;
+            ControlSystem::Buffer::frame_buffer[y][x0] = color;
             ControlSystem::Buffer::depth_buffer[y][x0] = p0.z;
         }
     }

@@ -26,7 +26,7 @@ protected:
 
 private:
     void rasterize_facet(const Facet& facet);
-    void draw_scanline(float y, GLMSlope& A, GLMSlope& B);
+    void draw_scanline(float y, GLMSlope& A, GLMSlope& B, uint32_t color);
 
     glm::mat4x4 transform;
 };

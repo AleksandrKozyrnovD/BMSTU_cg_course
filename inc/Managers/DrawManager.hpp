@@ -11,14 +11,14 @@ int Buffer::width = 1280;
 int Buffer::height = 720;
 
 std::vector<std::vector<float>> Buffer::original_buffer
-= std::vector<std::vector<float>>(height, std::vector<float>(width, 0.0f));
+= std::vector<std::vector<float>>(height, std::vector<float>(width, 1e38f));
 
 std::vector<std::vector<float>> Buffer::depth_buffer = original_buffer;
 
-std::vector<std::vector<size_t>> Buffer::original_frame_buffer
-= std::vector<std::vector<size_t>>(height, std::vector<size_t>(width, Color::GRAY));
+std::vector<std::vector<uint32_t>> Buffer::original_frame_buffer
+= std::vector<std::vector<uint32_t>>(height, std::vector<uint32_t>(width, Color::GRAY));
 
-std::vector<std::vector<size_t>> Buffer::frame_buffer = original_frame_buffer;
+std::vector<std::vector<uint32_t>> Buffer::frame_buffer = original_frame_buffer;
 
 
 void DrawManager::set_window_size(int w, int h)
@@ -31,7 +31,7 @@ void DrawManager::set_window_size(int w, int h)
     Buffer::depth_buffer = Buffer::original_buffer;
 
     Buffer::original_frame_buffer
-    = std::vector<std::vector<size_t>>(Buffer::height, std::vector<size_t>(Buffer::width, Color::GRAY));
+    = std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x777777ff));
     Buffer::frame_buffer = Buffer::original_frame_buffer;
 }
 
@@ -55,23 +55,14 @@ void DrawManager::draw_scene_no_lights()
     {
         for (int x = 0; x < Buffer::width; ++x)
         {
-            //getting color
-            if (Buffer::frame_buffer[y][x] == Color::RED)
-            {
-                Graphics::SDLCanvas::set_color(255, 0, 0, 255);
-            }
-            else if (Buffer::frame_buffer[y][x] == Color::GREEN)
-            {
-                Graphics::SDLCanvas::set_color(0, 255, 0, 255);
-            }
-            else if (Buffer::frame_buffer[y][x] == Color::BLUE)
-            {
-                Graphics::SDLCanvas::set_color(0, 0, 255, 255);
-            }
-            else
-            {
-                Graphics::SDLCanvas::set_color(0, 0, 0, 255);
-            }
+            //getting ARGB8888 color
+            uint32_t color = Buffer::frame_buffer[y][x];
+            int r = color & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = (color >> 16) & 0xFF;
+            int a = (color >> 24) & 0xFF;
+
+            Graphics::SDLCanvas::set_color(r, g, b, a);
             Graphics::SDLCanvas::set_pixel(x, y);
         }
     }

@@ -28,6 +28,7 @@ public:
 private:
     int m_exit_status{0};
     bool m_running{true};
+    bool cursor_controls{true};
 
     std::unique_ptr<Window> m_window{nullptr};
 };

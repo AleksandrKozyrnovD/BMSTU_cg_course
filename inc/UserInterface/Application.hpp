@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include <SDL_events.h>
+#include <SDL_mouse.h>
 #include <SDL_render.h>
 #include <SDL_timer.h>
 #include <SDL_video.h>
@@ -49,7 +50,7 @@ int Application::Application::run() {
 
     float dx, dy;
 
-    glm::vec3 center = glm::vec3(0, 0, -2);
+    glm::vec3 center = glm::vec3(0, 0, 2);
     glm::vec3 up = glm::vec3(0, 1, 0);
     glm::vec3 forward = glm::vec3(0, 0, -1);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
@@ -61,6 +62,11 @@ int Application::Application::run() {
     std::shared_ptr<AbstractObject> obj =
     ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt");
 
+
+    std::shared_ptr<AbstractObject> obj3 =
+    ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test1.txt");
+
+
     Graphics::SDLCanvas::set_renderer(m_window->get_native_renderer());
 
 
@@ -69,6 +75,8 @@ int Application::Application::run() {
 
     ControlSystem::SceneManager::set_camera(camera);
     ControlSystem::SceneManager::add_object(obj);
+    ControlSystem::SceneManager::add_object(obj3);
+
 
 
     IMGUI_CHECKVERSION();
@@ -78,11 +86,9 @@ int Application::Application::run() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    // SDL_SetWindowInputFocus(this->m_window->get_native_window());
-    SDL_RaiseWindow(m_window->get_native_window());
-
     ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
     ImGui_ImplSDLRenderer2_Init(m_window->get_native_renderer());
+
 
     m_running = true;
     while (m_running)
@@ -100,29 +106,46 @@ int Application::Application::run() {
                 case SDL_KEYDOWN:
                     if (event.key.keysym.scancode == SDL_SCANCODE_W)
                     {
-                        glm::vec3 v = camera->forward * 1.0f;
+                        glm::vec3 v = camera->forward * 0.25f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                     {
-                        glm::vec3 v = camera->forward * 1.0f;
-                        ControlSystem::TransformManager::move(obj2, -v.x, -v.y, -v.z);
+                        glm::vec3 v = -camera->forward * 0.25f;
+                        ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                     {
-                        glm::vec3 v = camera->right * 1.0f;
-                        ControlSystem::TransformManager::move(obj2, -v.x, -v.y, -v.z);
+                        glm::vec3 v = camera->right * 0.25f;
+                        ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_D)
                     {
-                        glm::vec3 v = camera->right * 1.0f;
+                        glm::vec3 v = -camera->right * 0.25f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
+                    //escape
+                    else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                    {
+                        this->cursor_controls = !this->cursor_controls;
+                        SDL_ShowCursor(this->cursor_controls);
+                    }
+                    //camera position now
+                    std::cout << "Camera pos: " << std::endl;
+                    std::cout << camera->get_center().x << " " << camera->get_center().y << " " << camera->get_center().z << std::endl;
+
                     break;
                 case SDL_MOUSEMOTION:
-                    dx = event.motion.xrel;
-                    dy = event.motion.yrel;
-                    ControlSystem::TransformManager::rotate(obj2, dy / 10.0f,-dx / 10.0f, 0.0f);
+                    dx = -event.motion.xrel;
+                    dy = -event.motion.yrel;
+                    if (this->cursor_controls)
+                        ControlSystem::TransformManager::rotate(obj2, dy / 10.0f,-dx / 10.0f, 0.0f);
+                    // std::cout << "Camera Vectors:" << std::endl;
+                    // std::cout << camera->forward.x << " " << camera->forward.y << " " << camera->forward.z << std::endl;
+                    // std::cout << camera->right.x << " " << camera->right.y << " " << camera->right.z << std::endl;
+                    // std::cout << camera->up.x << " " << camera->up.y << " " << camera->up.z << std::endl;
+
+
                     break;
 
                 default:
@@ -137,14 +160,16 @@ int Application::Application::run() {
         SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
         SDL_RenderClear(m_window->get_native_renderer());
         //Risovanie zdes
-        obj->accept(std::make_shared<DrawVisitor>(visitor));
-
-        ControlSystem::TransformManager::rotate(obj, 0.1, 0.1, 0.1);
+        // ControlSystem::TransformManager::rotate(obj, 0.1, 0.1, 0.1);
         ControlSystem::DrawManager::draw_scene_no_lights();
 
         
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->m_window->get_native_renderer());
         SDL_RenderPresent(m_window->get_native_renderer());
+
+        //change mouse position to center
+        if (this->cursor_controls)
+            SDL_WarpMouseInWindow(m_window->get_native_window(), m_window->settings.width / 2, m_window->settings.height / 2);
 
         //delay for debuggind reasons
         // SDL_Delay(100);

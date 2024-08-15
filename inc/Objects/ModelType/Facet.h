@@ -4,6 +4,7 @@
 #include "Plane.h"
 
 #include "glm/mat4x4.hpp"
+#include <cstdint>
 
 
 class DrawVisitor;
@@ -16,8 +17,8 @@ public:
     Facet(const Facet& other) = default;
     Facet(Facet&& other) noexcept = default;
     
-    Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) noexcept;
-    Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction) noexcept;
+    Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, uint32_t color = 0xff0000ff) noexcept;
+    Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction, uint32_t color = 0xff0000ff) noexcept;
 
     ~Facet() = default;
 
@@ -34,6 +35,9 @@ public:
     glm::vec3 get_center() const;
 
     void fix_direction(const glm::vec3& center);
+
+public:
+    uint32_t color;
 };
 
 #include "Facet.hpp"

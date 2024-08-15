@@ -36,7 +36,7 @@ void Camera::accept(std::shared_ptr<AbstractVisitor> visitor)
 
 glm::mat4x4 Camera::get_view_matrix() const
 {
-    return glm::lookAt(this->center, this->center + this->forward, this->up);
+    return glm::lookAt(this->center, this->center - this->forward, this->up);
 }
 
 glm::mat4x4 Camera::get_perspective_matrix() const

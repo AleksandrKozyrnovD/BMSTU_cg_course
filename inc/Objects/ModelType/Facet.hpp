@@ -5,12 +5,12 @@
 #include <glm/glm/gtx/rotate_vector.hpp>
 #include <glm/glm/mat4x4.hpp>
 
-Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C) noexcept
-    : Surface(A, B, C)
+Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, uint32_t color) noexcept
+    : Surface(A, B, C), color(color)
 {}
 
-Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction) noexcept
-    : Surface(A, B, C, direction)
+Facet::Facet(const glm::vec3& A, const glm::vec3& B, const glm::vec3& C, bool direction, uint32_t color) noexcept
+    : Surface(A, B, C, direction), color(color)
 {}
 
 Facet& Facet::operator=(const Facet& other)
