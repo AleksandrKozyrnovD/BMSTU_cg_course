@@ -10,6 +10,7 @@ DrawVisitor::DrawVisitor(std::shared_ptr<Camera>& camera)
 {}
 
 
+#include <iostream>
 void DrawVisitor::rasterize_facet(const Facet& facet)
 {
     /*
@@ -50,6 +51,11 @@ void DrawVisitor::rasterize_facet(const Facet& facet)
     p0.z = z0;
     p1.z = z1;
     p2.z = z2;
+
+    std::cout << "Points: " << std::endl;
+    std::cout << p0.x << " " << p0.y << " " << p0.z << std::endl;
+    std::cout << p1.x << " " << p1.y << " " << p1.z << std::endl;
+    std::cout << p2.x << " " << p2.y << " " << p2.z << std::endl;
 
 
     // Sort the points in order of Y coordinate, so first point is the top one.
@@ -109,7 +115,6 @@ void DrawVisitor::rasterize_facet(const Facet& facet)
     }
 }
 
-#include <iostream>
 void DrawVisitor::draw_scanline(float y, GLMSlope& A, GLMSlope& B, uint32_t color)
 {
     glm::vec3 p0 = A.get();
@@ -119,7 +124,9 @@ void DrawVisitor::draw_scanline(float y, GLMSlope& A, GLMSlope& B, uint32_t colo
     int x0 = p0.x;
     int x1 = p1.x;
 
-    if (x0 < 0 && x1 < 0) return;
+    if (x0 > x1) std::swap(x0, x1);
+
+    //for future me to fix
     if (y < 0) y = 0;
     if (y > 720) y = 719;
     if (x0 < 0) x0 = 0;

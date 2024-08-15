@@ -59,8 +59,8 @@ int Application::Application::run() {
     
     DrawVisitor visitor(camera);
 
-    std::shared_ptr<AbstractObject> obj =
-    ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt");
+    // std::shared_ptr<AbstractObject> obj =
+    // ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt");
 
 
     std::shared_ptr<AbstractObject> obj3 =
@@ -74,7 +74,7 @@ int Application::Application::run() {
     ControlSystem::SceneManager::set_scene(scene);
 
     ControlSystem::SceneManager::set_camera(camera);
-    ControlSystem::SceneManager::add_object(obj);
+    // ControlSystem::SceneManager::add_object(obj);
     ControlSystem::SceneManager::add_object(obj3);
 
 
@@ -116,12 +116,12 @@ int Application::Application::run() {
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                     {
-                        glm::vec3 v = camera->right * 0.25f;
+                        glm::vec3 v = -camera->right * 0.25f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_D)
                     {
-                        glm::vec3 v = -camera->right * 0.25f;
+                        glm::vec3 v = camera->right * 0.25f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     //escape
@@ -137,7 +137,7 @@ int Application::Application::run() {
                     break;
                 case SDL_MOUSEMOTION:
                     dx = -event.motion.xrel;
-                    dy = -event.motion.yrel;
+                    dy = event.motion.yrel;
                     if (this->cursor_controls)
                         ControlSystem::TransformManager::rotate(obj2, dy / 10.0f,-dx / 10.0f, 0.0f);
                     // std::cout << "Camera Vectors:" << std::endl;

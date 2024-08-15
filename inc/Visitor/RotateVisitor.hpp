@@ -60,8 +60,11 @@ void RotateVisitor::visit(Camera& obj)
 
 
     obj.forward = glm::normalize(matrix * glm::vec4(obj.forward, 0.0f));
-    obj.up = glm::normalize(matrix * glm::vec4(obj.up, 0.0f));
-    obj.right = glm::normalize(matrix * glm::vec4(obj.right, 0.0f));
+    obj.right = glm::normalize(glm::cross(obj.forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+    obj.up = glm::normalize(glm::cross(obj.right, obj.forward));
+
+    // obj.up = glm::normalize(matrix * glm::vec4(obj.up, 0.0f));
+    // obj.right = glm::normalize(matrix * glm::vec4(obj.right, 0.0f));
 }
 
 void RotateVisitor::visit(Light& obj)
