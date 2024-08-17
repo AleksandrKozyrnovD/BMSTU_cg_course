@@ -11,7 +11,10 @@ class Model : public Drawable
     friend class RotateVisitor;
     friend class ScaleVisitor;
     friend class DrawVisitor;
-    friend class DrawVisitor;
+    friend class Drawer;
+    friend class ZMapper;
+    friend class LightCaster;
+
 public:
     Model() = default;
     Model(const Model& other) = default;

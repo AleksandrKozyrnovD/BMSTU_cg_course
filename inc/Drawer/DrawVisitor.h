@@ -1,15 +1,10 @@
 #ifndef __DRAW_VISITOR_H__
 #define __DRAW_VISITOR_H__
 
-#include "AbstractVisitor.h"
-#include "Canvas.h"
-#include "Window.h"
-#include "ModelType/Facet.h"
-#include "Camera.h"
-#include "Slope.h"
+#include "Drawer.h"
 
 
-class DrawVisitor : public AbstractVisitor
+class DrawVisitor : public Drawer
 {
 public:
     DrawVisitor() = delete;
@@ -22,13 +17,10 @@ public:
     void visit(Light& obj) override;
 
 protected:
-    std::shared_ptr<Camera>& camera;
+    uint32_t color;
 
-private:
-    void rasterize_facet(const Facet& facet);
-    void draw_scanline(float y, GLMSlope& A, GLMSlope& B, uint32_t color);
+    virtual void process_scanline(float y, GLMSlope& A, GLMSlope& B) override;
 
-    glm::mat4x4 transform;
 };
 
 #include "DrawVisitor.hpp"

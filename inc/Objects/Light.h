@@ -10,6 +10,7 @@ class Light : public Camera
 public:
     Light() = default;
     Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward, const glm::vec4& color);
+    Light(const Camera& camera, const glm::vec4& color);
     ~Light() override = default;
 
     void accept(std::shared_ptr<AbstractVisitor> visitor) override;

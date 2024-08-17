@@ -12,6 +12,7 @@ class DrawVisitor;
 class Facet : public Surface
 {
 friend class DrawVisitor;
+friend class Drawer;
 public:
     Facet() = default;
     Facet(const Facet& other) = default;

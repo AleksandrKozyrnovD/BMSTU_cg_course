@@ -4,6 +4,8 @@
 #include <SDL_render.h>
 #include <SDL2/SDL.h>
 
+#include "Buffer.inl" //frame + depth buffers
+
 namespace Graphics
 {
     class SDLCanvas
@@ -23,14 +25,15 @@ namespace Graphics
 
         static void set_window_size(int w, int h);
 
-        //where to draw. It will be drawn from (x,y) to (x+win_width, y+win_height) so from left to right and from up to bottom
+        //deprecated?
         static void set_viewport(int x, int y);
 
         static void clear(int r, int g, int b, int a); 
+
+
     protected:
         static SDL_Renderer *renderer;
         static int win_width, win_height, viewpoint_x, viewpoint_y;
-
     };
 }
 

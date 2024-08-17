@@ -2,10 +2,6 @@
 #define __DRAW_MANAGER_H__
 
 #include "BaseManager.h"
-#include "Color.h"
-
-
-#include <vector>
 
 
 namespace ControlSystem

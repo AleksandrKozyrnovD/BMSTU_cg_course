@@ -16,7 +16,7 @@ std::vector<std::vector<float>> Buffer::original_buffer
 std::vector<std::vector<float>> Buffer::depth_buffer = original_buffer;
 
 std::vector<std::vector<uint32_t>> Buffer::original_frame_buffer
-= std::vector<std::vector<uint32_t>>(height, std::vector<uint32_t>(width, Color::GRAY));
+= std::vector<std::vector<uint32_t>>(height, std::vector<uint32_t>(width, 0));
 
 std::vector<std::vector<uint32_t>> Buffer::frame_buffer = original_frame_buffer;
 
@@ -57,10 +57,14 @@ void DrawManager::draw_scene_no_lights()
         {
             //getting ARGB8888 color
             uint32_t color = Buffer::frame_buffer[y][x];
-            int r = color & 0xFF;
-            int g = (color >> 8) & 0xFF;
-            int b = (color >> 16) & 0xFF;
-            int a = (color >> 24) & 0xFF;
+            int r = (color & 0xFF000000) >> 24;
+            int g = (color & 0x00FF0000) >> 16;
+            int b = (color & 0x0000FF00) >> 8;
+            int a = color & 0x000000FF;
+
+            r /= (Buffer::depth_buffer[y][x] + 2.5f);
+            g /= (Buffer::depth_buffer[y][x] + 2.5f);
+            b /= (Buffer::depth_buffer[y][x] + 2.5f);
 
             Graphics::SDLCanvas::set_color(r, g, b, a);
             Graphics::SDLCanvas::set_pixel(x, y);
