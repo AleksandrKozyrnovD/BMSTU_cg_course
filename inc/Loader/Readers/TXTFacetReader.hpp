@@ -38,7 +38,6 @@ Facet TXTFacetReader::read_facet()
     int green = (color & 0x00FF0000) >> 16;
     int blue = (color & 0x0000FF00) >> 8;
     int alpha = color & 0x000000FF;
-    std::cout << red << " " << green << " " << blue << " " << alpha << std::endl;
 
     return Facet(A, B, C, color);
 }

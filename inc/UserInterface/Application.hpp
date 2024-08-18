@@ -50,9 +50,9 @@ int Application::Application::run() {
 
     float dx, dy;
 
-    glm::vec3 center = glm::vec3(0, 0, 2);
+    glm::vec3 center = glm::vec3(0, 0, -2);
     glm::vec3 up = glm::vec3(0, 1, 0);
-    glm::vec3 forward = glm::vec3(0, 0, -1);
+    glm::vec3 forward = glm::vec3(0, 0, 1);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
 
     std::shared_ptr<AbstractObject> obj2 = std::static_pointer_cast<AbstractObject>(camera);
@@ -76,7 +76,6 @@ int Application::Application::run() {
     ControlSystem::SceneManager::set_camera(camera);
     ControlSystem::SceneManager::add_object(obj);
     ControlSystem::SceneManager::add_object(obj3);
-
 
 
     IMGUI_CHECKVERSION();
