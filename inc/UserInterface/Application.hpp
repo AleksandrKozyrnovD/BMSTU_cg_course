@@ -2,6 +2,7 @@
 #include "Canvas.h"
 #include "ImguiInterface.h"
 #include "SceneManager.h"
+#include "glm/ext/matrix_projection.hpp"
 #include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include <SDL_events.h>
@@ -54,8 +55,13 @@ int Application::Application::run() {
     glm::vec3 up = glm::vec3(0, 1, 0);
     glm::vec3 forward = glm::vec3(0, 0, 1);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
+    std::shared_ptr<Light> light = std::make_shared<Light>(center + glm::vec3(0.0f, 0.0f, 0.0f), up, forward, 0xff000000);
+
+
 
     std::shared_ptr<AbstractObject> obj2 = std::static_pointer_cast<AbstractObject>(camera);
+    std::shared_ptr<AbstractObject> obj4 = std::static_pointer_cast<AbstractObject>(light);
+
     
     DrawVisitor visitor(camera);
 
@@ -74,9 +80,31 @@ int Application::Application::run() {
     ControlSystem::SceneManager::set_scene(scene);
 
     ControlSystem::SceneManager::set_camera(camera);
-    ControlSystem::SceneManager::add_object(obj);
+    ControlSystem::SceneManager::add_light(light);
     ControlSystem::SceneManager::add_object(obj3);
+    ControlSystem::SceneManager::add_object(obj);
 
+    // glm::vec3 test(0, 0, -20);
+    // glm::mat4 model(1.0f);
+    // glm::mat4 view = camera->get_view_matrix();
+    // glm::mat4 perspective = camera->get_perspective_matrix();
+
+    // //1280x720
+    // glm::vec4 viewport = glm::vec4(0.0f, 0.0f, 1280.0f, 720.0f);
+    // glm::mat4 proj = perspective * view;
+    // std::cout << "Original: " << test.x << " " << test.y << " " << test.z << std::endl;
+
+    // test = glm::project(test, model, proj, viewport);
+
+    // std::cout << "Projected: " << test.x << " " << test.y << " " << test.z << std::endl;
+
+    // test = glm::unProject(test, model, proj, viewport);
+
+    // std::cout << "Unprojected: " << test.x << " " << test.y << " " << test.z << std::endl;
+
+
+
+    // return 0;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -105,22 +133,22 @@ int Application::Application::run() {
                 case SDL_KEYDOWN:
                     if (event.key.keysym.scancode == SDL_SCANCODE_W)
                     {
-                        glm::vec3 v = camera->forward * 0.25f;
+                        glm::vec3 v = camera->forward * 0.025f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                     {
-                        glm::vec3 v = -camera->forward * 0.25f;
+                        glm::vec3 v = -camera->forward * 0.025f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_A)
                     {
-                        glm::vec3 v = -camera->right * 0.25f;
+                        glm::vec3 v = -camera->right * 0.025f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     else if (event.key.keysym.scancode == SDL_SCANCODE_D)
                     {
-                        glm::vec3 v = camera->right * 0.25f;
+                        glm::vec3 v = camera->right * 0.025f;
                         ControlSystem::TransformManager::move(obj2, v.x, v.y, v.z);
                     }
                     //escape
@@ -149,8 +177,9 @@ int Application::Application::run() {
         SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
         SDL_RenderClear(m_window->get_native_renderer());
         //Risovanie zdes
-        ControlSystem::TransformManager::rotate(obj, 0.1, 0.1, 0.1);
-        ControlSystem::DrawManager::draw_scene_no_lights();
+        ControlSystem::TransformManager::rotate(obj, 1.0f, 1.0f, 1.0f);
+        // ControlSystem::TransformManager::rotate(obj2, 0.0f, 1.0f, 0.0f);
+        ControlSystem::DrawManager::draw_scene();
 
         
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), this->m_window->get_native_renderer());

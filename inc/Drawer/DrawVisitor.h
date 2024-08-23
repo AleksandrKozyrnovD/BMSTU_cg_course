@@ -19,7 +19,8 @@ public:
 protected:
     uint32_t color;
 
-    virtual void process_scanline(float y, GLMSlope& A, GLMSlope& B) override;
+    void process_facet(const Facet& facet) override;
+    void process_scanline(float y, GLMSlope& A, GLMSlope& B) override;
 
 };
 

@@ -111,6 +111,29 @@ Scene::iteratorCamera Scene::endCamera() {
     return this->cameras.cend();
 }
 
+void Scene::add_light(const std::shared_ptr<Light> obj)
+{
+    this->light_list.push_back(obj);
+}
+
+void Scene::remove_light(const size_t id)
+{
+    bool not_found = true;
+    for (auto it = this->light_list.begin(); not_found && it != this->light_list.end(); ++it)
+    {
+        if ((*it)->get_id() == id)
+        {
+            this->light_list.erase(it);
+            not_found = false;
+        }
+    }
+}
+
+std::list<std::shared_ptr<Light>>& Scene::get_lights()
+{
+    return this->light_list;
+}
+
 
 // void Scene::add_composite(const std::vector<std::shared_ptr<AbstractObject>> objects)
 // {

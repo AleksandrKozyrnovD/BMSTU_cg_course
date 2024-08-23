@@ -19,6 +19,7 @@ public:
     void visit(Light& obj) override;   
 
 protected:
+    virtual void process_facet(const Facet& facet) override;
     virtual void process_scanline(float y, GLMSlope& A, GLMSlope& B) override;
 };
 

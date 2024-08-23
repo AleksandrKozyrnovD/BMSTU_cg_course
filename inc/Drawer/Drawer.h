@@ -17,7 +17,7 @@ protected:
     std::shared_ptr<Camera>& camera;
     glm::mat4x4 transform;
 
-    void process_facet(const Facet& facet); //depth + color
+    virtual void process_facet(const Facet& facet) = 0; //depth + color
 
     virtual void process_scanline(float y, GLMSlope& A, GLMSlope& B) = 0;
 };

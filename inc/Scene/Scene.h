@@ -3,9 +3,10 @@
 
 #include "AbstractObject.h"
 #include "Camera.h"
-#include <list>
+#include "Light.h"
 #include "SceneManager.h"
 
+#include <list>
 
 namespace ControlSystem
 {
@@ -33,6 +34,11 @@ public:
     void remove_camera(const std::list<iterator>::const_iterator &it);
     std::shared_ptr<AbstractObject> get_camera(const iteratorCamera &it);
 
+
+    void add_light(const std::shared_ptr<Light> obj);
+    void remove_light(const size_t id);
+    std::list<std::shared_ptr<Light>>& get_lights();
+
     iterator begin();
     iterator end();
     const_iterator begin() const;
@@ -53,6 +59,7 @@ public:
 protected:
     std::list<std::shared_ptr<AbstractObject>> objects;
     std::list<iterator> cameras;
+    std::list<std::shared_ptr<Light>> light_list;
 };
 
 #include "Scene.hpp"

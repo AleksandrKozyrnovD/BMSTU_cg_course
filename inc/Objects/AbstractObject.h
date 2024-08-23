@@ -36,11 +36,11 @@ public:
     glm::vec3 get_center() const { return glm::vec3(this->center); }
     glm::vec3& get_center() { return this->center; }
 
+    glm::mat4x4 transform = glm::mat4x4(1.0f);
 protected:
     std::size_t id;
     static std::size_t nextid;
     glm::vec3 center;
-    glm::mat4x4 transform = glm::mat4x4(1.0f);
 };
 
 #include "AbstractObject.hpp"

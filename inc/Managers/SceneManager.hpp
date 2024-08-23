@@ -138,6 +138,21 @@ std::vector<std::size_t> SceneManager::get_camera_ids()
     return ids;
 }
 
+void SceneManager::add_light(std::shared_ptr<Light> light)
+{
+    scene->add_light(light);
+}
+
+void SceneManager::remove_light(std::size_t id)
+{
+    scene->remove_light(id);
+}
+
+std::list<std::shared_ptr<Light>>& SceneManager::get_lights()
+{
+    return scene->get_lights();
+}
+
 
 // void SceneManager::make_composite(std::vector<size_t> ids)
 // {

@@ -7,16 +7,17 @@
 //Мы его не увидим, если не будет объектов сцены, отражающих его, верно?
 class Light : public Camera
 {
+    friend class LightCaster;
 public:
     Light() = default;
-    Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward, const glm::vec4& color);
-    Light(const Camera& camera, const glm::vec4& color);
+    Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward, const uint32_t& color);
+    Light(const Camera& camera, const uint32_t& color);
     ~Light() override = default;
 
     void accept(std::shared_ptr<AbstractVisitor> visitor) override;
 
-protected:
-    glm::vec4 color;
+    float intensity = 1.0f;
+    uint32_t color;
 };
 
 #include "Light.hpp"
