@@ -3,6 +3,7 @@
 
 #include "BaseManager.h"
 #include "Light.h"
+
 #include <memory>
 
 
@@ -21,7 +22,6 @@ namespace ControlSystem
         static void draw_scene();
     
     private:
-        // static void process_lights();
         static void process_from_viewpoint(std::shared_ptr<Light>& light_sorce, std::shared_ptr<Camera>& camera, glm::mat4 transform);
     };
 }

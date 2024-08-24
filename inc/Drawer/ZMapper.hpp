@@ -20,7 +20,8 @@ void ZMapper::process_facet(const Facet& facet)
     glm::mat4x4 model = this->transform;
     glm::mat4x4 projection = camera->get_perspective_matrix();
     glm::mat4x4 view = camera->get_view_matrix();
-    glm::vec4 viewport(0.0f, 0.0f, 1280.0f, 720.0f);
+    glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
+
 
     glm::vec3 p0 = facet.A;
     glm::vec3 p1 = facet.B;
@@ -99,9 +100,9 @@ void ZMapper::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > 720) y = 719;
+    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > 1280) x1 = 1279;
+    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {

@@ -1,11 +1,13 @@
+#include "AbstractObject.h"
 #include "Facade.h"
-#include "Scene.h"
+#include <memory>
+// #include "Scene.h"
 
 void ControlSystem::Facade::initialize()
 {
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>(new Scene);
-    std::shared_ptr<Camera> camera = std::make_shared<Camera>(new Camera);
-    
+    std::shared_ptr<Scene> scene(new Scene);
+    std::shared_ptr<Camera> camera(new Camera);
+
     ControlSystem::SceneManager::set_scene(scene);
     ControlSystem::SceneManager::set_camera(camera);
 }

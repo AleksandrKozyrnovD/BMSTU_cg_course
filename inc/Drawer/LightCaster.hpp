@@ -16,13 +16,13 @@ LightCaster::LightCaster(std::shared_ptr<Camera>& camera, std::shared_ptr<Light>
 void LightCaster::process_facet(const Facet& facet)
 {
     /*
-    https://bisqwit.iki.fi/jutut/kuvat/programming_examples/polytut/ <---- tutorial and prime example from where i got code
+    https://bisqwit.iki.fi/jutut/kuvat/programming_examples/polytut/ <---- tutorial and prime example from where i got the code
     */
 
     glm::mat4x4 model = this->transform;
     glm::mat4x4 projection = this->light_source->get_perspective_matrix();
     glm::mat4x4 view = this->light_source->get_view_matrix();
-    glm::vec4 viewport(0.0f, 0.0f, 1280.0f, 720.0f);
+    glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
 
     glm::vec3 p0 = facet.A;
     glm::vec3 p1 = facet.B;
@@ -34,7 +34,6 @@ void LightCaster::process_facet(const Facet& facet)
     p0 = glm::vec3(glm::project(p0, model, proj, viewport));
     p1 = glm::vec3(glm::project(p1, model, proj, viewport));
     p2 = glm::vec3(glm::project(p2, model, proj, viewport));
-
 
 
     // Sort the points in order of Y coordinate, so first point is the top one.
@@ -53,7 +52,7 @@ void LightCaster::process_facet(const Facet& facet)
         std::swap(p1, p2);
     }
     
-    //refuse to draw triangle if triangle is arealess. Assuming here that facets are superthin
+    //refuse to draw triangle if triangle is arealess (forms a line or a point). Assuming here that facets are superthin
     if (p0.y == p2.y)
     {
         return;
@@ -101,9 +100,9 @@ void LightCaster::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > 720) y = 719;
+    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > 1280) x1 = 1279;
+    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {
@@ -118,58 +117,6 @@ void LightCaster::process_scanline(float y, GLMSlope& A, GLMSlope& B)
     B.advance();
 }
 
-// #include <iostream>
-// void LightCaster::see_from_viewer()
-// {
-//     glm::mat4 camera_view = camera->get_view_matrix();
-//     glm::mat4 camera_perspective = camera->get_perspective_matrix();
-//     glm::mat4 light_view = light_source->get_view_matrix();
-//     glm::mat4 light_perspective = light_source->get_perspective_matrix();
-
-//     glm::mat4 camera_proj = camera_perspective * camera_view;
-//     glm::mat4 light_proj = light_perspective * light_view;
-
-//     int w = 1280;
-//     int h = 720;
-//     glm::vec4 viewport(0.0f, 0.0f, w, h);
-
-//     for (int y = 0; y < 720; ++y)
-//     {
-//         for (int x = 0; x < 1280; ++x)
-//         {
-//             float z = ControlSystem::Buffer::depth_buffer[y][x];
-//             // std::cout << "Initial z: " << z << std::endl;
-//             if (true) //if not infinitely far away
-//             {
-//                 glm::vec3 lightdepthbufferpoint = glm::vec3(x, y, z);
-                
-//                 //to get the point in world coordinates
-//                 lightdepthbufferpoint = glm::unProject(lightdepthbufferpoint, this->transform, camera_proj, viewport);
-
-//                 //now to get the point in light coordinates
-//                 lightdepthbufferpoint = glm::project(lightdepthbufferpoint, this->transform, light_proj, viewport);
-//                 int x2 = round(lightdepthbufferpoint.x);
-//                 int y2 = round(lightdepthbufferpoint.y);
-//                 float z2 = lightdepthbufferpoint.z;
-
-//                 if (x2 >= 0 && x2 < 1280 && y2 >= 0 && y2 < 720)
-//                 {
-//                     // std::cout << "x,y: " << x2 << " " << y2 << " z: " << z2 << std::endl;
-//                     // std::cout << "Buffer z: " << ControlSystem::Buffer::light_depth_buffer[y2][x2] << std::endl;
-//                     //if z is not far from shadowmap's z
-//                     if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - 0) >= 0.000f)
-//                     {
-//                         // std::cout << "Got it!" << std::endl;
-//                         ControlSystem::Buffer::frame_buffer[y][x] = this->color;
-//                     }
-//                 }
-//                 // std::cout << "========" << std::endl;
-//             }
-//         }
-//     }
-// }
-
-
 void LightCaster::visit(Model& obj)
 {
     this->transform = obj.transform;
@@ -177,7 +124,6 @@ void LightCaster::visit(Model& obj)
     {
         this->process_facet(facet);
         this->color = facet.color;
-        // this->see_from_viewer();
     }
 }
 

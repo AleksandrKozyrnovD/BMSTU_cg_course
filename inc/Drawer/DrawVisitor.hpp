@@ -5,6 +5,19 @@
 #include "Model.h"
 #include "CompositeObject.h"
 
+/*
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+DEPRECATED< NOT USED
+*/
+
 
 DrawVisitor::DrawVisitor(std::shared_ptr<Camera>& camera)
     : Drawer(camera)
@@ -102,7 +115,6 @@ void DrawVisitor::process_facet(const Facet& facet)
     }
 }
 
-#include <iostream>
 void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 {
     glm::vec3 p0 = A.get();
@@ -116,25 +128,14 @@ void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > 720) y = 719;
+    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > 1280) x1 = 1279;
+    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {
-        //check if pixel inside viewframe. 1280x720
-
         if (ControlSystem::Buffer::depth_buffer[y][x0] < p0.z && p0.z > 0.1f) //facet is not behind camera so > 0.1f
         {
-            // std::cout << "new z value: " << p0.z << " for (x,y): (" << x0 << "," << y << "), and color: " << color <<std::endl;
-
-            //RGBA8888
-            // uint8_t red = (this->color & 0xFF);
-            // uint8_t green = ((this->color << 8) & 0xFF);
-            // uint8_t blue = ((this->color << 16) & 0xFF);
-            // uint8_t alpha = ((this->color << 24) & 0xFF);
-            // std::cout << "Red: " << red << " Green: " << green << " Blue: " << blue << " Alpha: " << alpha << std::endl;
-
             ControlSystem::Buffer::frame_buffer[y][x0] = this->color;
             ControlSystem::Buffer::depth_buffer[y][x0] = p0.z;
         }

@@ -14,6 +14,7 @@ using namespace ControlSystem;
 int Buffer::width = 1280;
 int Buffer::height = 720;
 
+
 std::vector<std::vector<float>> Buffer::original_buffer
 = std::vector<std::vector<float>>(height, std::vector<float>(width, 1.0f));
 
@@ -35,11 +36,11 @@ void DrawManager::set_window_size(int w, int h)
     Buffer::height = h;
 
     Buffer::original_buffer
-    = std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 0.0f));
+    = std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 1.0f));
     Buffer::depth_buffer = Buffer::original_buffer;
 
     Buffer::original_frame_buffer
-    = std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x777777ff));
+    = std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x00000000));
     Buffer::frame_buffer = Buffer::original_frame_buffer;
 }
 
@@ -141,7 +142,6 @@ void DrawManager::draw_scene()
 }
 
 
-#include <iostream>
 void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, std::shared_ptr<Camera>& camera, glm::mat4 transform)
 {
     glm::mat4 camera_view = camera->get_view_matrix();
@@ -152,8 +152,8 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
     glm::mat4 camera_proj = camera_perspective * camera_view;
     glm::mat4 light_proj = light_perspective * light_view;
 
-    int w = 1280;
-    int h = 720;
+    int w = ControlSystem::Buffer::width;
+    int h = ControlSystem::Buffer::height;
     glm::vec4 viewport(0.0f, 0.0f, w, h);
 
     for (int y = 0; y < 720; ++y)
@@ -188,13 +188,11 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
                 if (x2 >= 0 && x2 < 1280 && y2 >= 0 && y2 < 720 && z2 > 0)
                 {
                     //if z is not far from shadowmap's z
-                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.005f)
+                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.001f)
                     {
-                        // std::cout << "Got it!" << std::endl;
                         Buffer::frame_buffer[y][x] = Buffer::light_frame_buffer[y2][x2];
                     }
                 }
-                // std::cout << "========" << std::endl;
             }
         }
     }

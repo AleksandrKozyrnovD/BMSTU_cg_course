@@ -2,6 +2,7 @@
 #define __FACADE_H__
 
 #include "CommandClasses/BaseCommand.h"
+#include "BaseManager.h"
 
 namespace ControlSystem
 {
@@ -15,6 +16,7 @@ namespace ControlSystem
 }
 
 #include "Facade.hpp"
+
 
 #endif
 

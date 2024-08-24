@@ -4,6 +4,7 @@ Scene::Scene()
 {
     this->objects = std::list<std::shared_ptr<AbstractObject>>();
     this->cameras = std::list<iterator>();
+    this->light_list = std::list<std::shared_ptr<Light>>();
 }
 
 
@@ -133,13 +134,3 @@ std::list<std::shared_ptr<Light>>& Scene::get_lights()
 {
     return this->light_list;
 }
-
-
-// void Scene::add_composite(const std::vector<std::shared_ptr<AbstractObject>> objects)
-// {
-//     std::shared_ptr<CompositeObject> composite = std::make_shared<CompositeObject>();
-//     for (const auto &obj : objects) {
-//         composite->add(obj);
-//     }
-//     this->add_object(composite);
-// }

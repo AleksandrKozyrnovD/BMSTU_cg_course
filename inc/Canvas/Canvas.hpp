@@ -1,11 +1,8 @@
+#include "Buffer.inl"
 #include "Canvas.h"
 
 using namespace Graphics;
 
-int SDLCanvas::win_width = 0;
-int SDLCanvas::win_height = 0;
-int SDLCanvas::viewpoint_x = 0;
-int SDLCanvas::viewpoint_y = 0;
 SDL_Renderer* SDLCanvas::renderer = nullptr;
 
 
@@ -27,18 +24,6 @@ void SDLCanvas::set_color(int r, int g, int b, int a)
 void SDLCanvas::set_pixel(int x, int y)
 {
     SDL_RenderDrawPoint(renderer, x, y);
-}
-
-void SDLCanvas::set_window_size(int w, int h)
-{
-    win_width = w;
-    win_height = h;
-}
-
-void SDLCanvas::set_viewport(int x, int y)
-{
-    viewpoint_x = x;
-    viewpoint_y = y;
 }
 
 void SDLCanvas::clear(int r, int g, int b, int a)

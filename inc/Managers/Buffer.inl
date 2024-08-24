@@ -10,6 +10,7 @@ namespace ControlSystem
     struct Buffer
     {
         static int width, height;
+
         static std::vector<std::vector<float>> original_buffer; // original frame buffer with no depth
         static std::vector<std::vector<float>> depth_buffer;
         static std::vector<std::vector<float>> light_depth_buffer;

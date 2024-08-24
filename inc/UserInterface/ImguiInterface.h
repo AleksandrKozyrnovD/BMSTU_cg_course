@@ -5,6 +5,9 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
 
+
+#include "Facade.h" /* What really gives derictives to program thru input of something */
+
 class ImguiInterface
 {
 public:

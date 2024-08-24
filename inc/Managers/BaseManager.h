@@ -14,5 +14,6 @@ namespace ControlSystem
 #include "TransformManager.h"
 #include "LoadManager.h"
 #include "SceneManager.h"
+#include "DrawManager.h"
 
 #endif
