@@ -14,10 +14,15 @@ public:
     ImguiInterface() = delete;
     ~ImguiInterface() = default;
 
+    static void init_interface();
+    static void end_interface();
+
     static void draw_interface();
 
 private:
-    static void draw_mainwindow(); static bool b_mainwindow;
+    static void draw_mainwindow(); static bool *b_mainwindow;
+    static void draw_menu(); static bool *b_main_menu;
+    static void draw_overlay(); static bool *b_overlay;
 };
 
 #include "ImguiInterface.hpp"

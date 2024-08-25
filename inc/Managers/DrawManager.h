@@ -20,6 +20,8 @@ namespace ControlSystem
         static void draw_scene_no_lights();
 
         static void draw_scene();
+
+        static bool do_we_draw;
     
     private:
         static void process_from_viewpoint(std::shared_ptr<Light>& light_sorce, std::shared_ptr<Camera>& camera, glm::mat4 transform);

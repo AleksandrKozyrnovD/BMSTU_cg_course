@@ -14,6 +14,7 @@ using namespace ControlSystem;
 int Buffer::width = 1280;
 int Buffer::height = 720;
 
+bool DrawManager::do_we_draw = true;
 
 std::vector<std::vector<float>> Buffer::original_buffer
 = std::vector<std::vector<float>>(height, std::vector<float>(width, 1.0f));
@@ -86,35 +87,39 @@ void DrawManager::draw_scene_no_lights()
 
 void DrawManager::draw_scene()
 {
-    std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
-
-    auto objects = ControlSystem::SceneManager::get_objects();
-    auto lights = ControlSystem::SceneManager::get_lights();
-
-    std::shared_ptr<AbstractVisitor> depth_visitor = std::make_shared<ZMapper>(camera);
-
-    Buffer::frame_buffer = Buffer::original_frame_buffer;
-    Buffer::depth_buffer = Buffer::original_buffer;
-
-    //make depth buffer from camera view point
-    for (auto &obj : objects)
+    if (DrawManager::do_we_draw)
     {
-        obj->accept(depth_visitor);
-    }
+        std::cout << "Drawing!" << std::endl;
+        std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
-    //what each light see and then what camera see?
-    //for every light source cast shadow from it
-    for (auto& light : lights)
-    {
-        std::shared_ptr<LightCaster> caster = std::make_shared<LightCaster>(camera, light);
-        ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_buffer; //reset depth buffer
-        ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_frame_buffer; //reset frame buffer
+        auto objects = ControlSystem::SceneManager::get_objects();
+        auto lights = ControlSystem::SceneManager::get_lights();
+        Buffer::frame_buffer = Buffer::original_frame_buffer;
+        Buffer::depth_buffer = Buffer::original_buffer;
+
+        //make depth buffer from camera view point
+        std::shared_ptr<AbstractVisitor> depth_visitor = std::make_shared<ZMapper>(camera);
         for (auto &obj : objects)
         {
-            obj->accept(caster);
+            obj->accept(depth_visitor);
         }
-        DrawManager::process_from_viewpoint(light, camera, glm::mat4(1.0f));
+
+        //what each light see and then what camera see?
+        //for every light source cast shadow from it
+        for (auto& light : lights)
+        {
+            std::shared_ptr<LightCaster> caster = std::make_shared<LightCaster>(camera, light);
+            ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_buffer; //reset depth buffer
+            ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_frame_buffer; //reset frame buffer
+            for (auto &obj : objects)
+            {
+                obj->accept(caster);
+            }
+            DrawManager::process_from_viewpoint(light, camera, glm::mat4(1.0f));
+        }
+        DrawManager::do_we_draw = false;
     }
+
 
     //apply frame_buffer to screen
     for (int y = 0; y < Buffer::height; ++y)
@@ -188,7 +193,7 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
                 if (x2 >= 0 && x2 < 1280 && y2 >= 0 && y2 < 720 && z2 > 0)
                 {
                     //if z is not far from shadowmap's z
-                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.001f)
+                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.0025f)
                     {
                         Buffer::frame_buffer[y][x] = Buffer::light_frame_buffer[y2][x2];
                     }
