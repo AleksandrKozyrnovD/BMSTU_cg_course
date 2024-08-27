@@ -128,9 +128,9 @@ void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
+    if (y >= ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
+    if (x1 >= ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {

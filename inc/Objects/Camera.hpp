@@ -2,6 +2,10 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
+Camera::Camera()
+    : up(0, 1, 0), forward(0, 0, 1), right(1, 0, 0)
+{}
+
 Camera::Camera(double x, double y, double z)
 {
     this->center = glm::vec3(x, y, z);

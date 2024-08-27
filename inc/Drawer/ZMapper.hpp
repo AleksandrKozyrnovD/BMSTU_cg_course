@@ -2,6 +2,7 @@
 
 
 #include "Buffer.inl"
+#include "glm/common.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "Model.h"
 #include "CompositeObject.h"
@@ -21,6 +22,7 @@ void ZMapper::process_facet(const Facet& facet)
     glm::mat4x4 projection = camera->get_perspective_matrix();
     glm::mat4x4 view = camera->get_view_matrix();
     glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
+    // glm::vec4 viewport(0.0f, 0.0f, 1280.0f, 720.0f);
 
 
     glm::vec3 p0 = facet.A;
@@ -33,6 +35,11 @@ void ZMapper::process_facet(const Facet& facet)
     p0 = glm::vec3(glm::project(p0, model, proj, viewport));
     p1 = glm::vec3(glm::project(p1, model, proj, viewport));
     p2 = glm::vec3(glm::project(p2, model, proj, viewport));
+
+    if (glm::isnan(p0.x) || glm::isnan(p0.y) || glm::isnan(p0.z) || glm::isnan(p1.x) || glm::isnan(p1.y) || glm::isnan(p1.z) || glm::isnan(p2.x) || glm::isnan(p2.y) || glm::isnan(p2.z))
+    {
+        return;
+    }
 
 
 
@@ -68,7 +75,7 @@ void ZMapper::process_facet(const Facet& facet)
     std::vector<GLMSlope> sides(2);
     sides[!shortside] = GLMSlope(p0, p2, p2.y - p0.y);
 
-    for (float y = p0.y, endy = p0.y; ; ++y)
+    for (float y = p0.y, endy = p0.y; y > 0 && y < ControlSystem::Buffer::height ; ++y)
     {
         if (y >= endy)
         {
@@ -100,9 +107,9 @@ void ZMapper::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
+    if (y >= ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
+    if (x1 >= ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {

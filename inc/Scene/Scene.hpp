@@ -115,6 +115,7 @@ Scene::iteratorCamera Scene::endCamera() {
 void Scene::add_light(const std::shared_ptr<Light> obj)
 {
     this->light_list.push_back(obj);
+    this->objects.push_back(obj);
 }
 
 void Scene::remove_light(const size_t id)

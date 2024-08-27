@@ -25,8 +25,8 @@ void ImguiInterface::draw_overlay()
         window_flags |= ImGuiWindowFlags_NoMove;
     }
     ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-    bool p_open = true;
-    if (ImGui::Begin("Example: Simple overlay", &p_open, window_flags))
+    // bool p_open = true;
+    if (ImGui::Begin("Example: Simple overlay", ImguiInterface::b_overlay, window_flags))
     {
         // IMGUI_DEMO_MARKER("Examples/Simple Overlay");
         ImGui::Text("Mouse Position\n");
@@ -45,9 +45,13 @@ void ImguiInterface::draw_overlay()
             auto command2 = Actions::Scene::GetCameraVectors(x1, y1, z1, x2, y2, z2, x3, y3, z3);
             Facade::execute(&command2);
             ImGui::Text("Camera Vectors:");
-            ImGui::Text("fwd: (%.1f,%.1f,%.1f)", x1, y1, z1);
-            ImGui::Text("rght: (%.1f,%.1f,%.1f)", x2, y2, z2);
-            ImGui::Text("up: (%.1f,%.1f,%.1f)", x3, y3, z3);
+            ImGui::Text("fwd: (%.3f,%.3f,%.3f)", x1, y1, z1);
+            ImGui::Text("rght: (%.3f,%.3f,%.3f)", x2, y2, z2);
+            ImGui::Text("up: (%.3f,%.3f,%.3f)", x3, y3, z3);
+
+            auto command3 = Actions::Scene::GetCameraPos(x, y, z);
+            Facade::execute(&command3);
+            ImGui::Text("Camera Position: (%.3f,%.3f,%.3f)", x, y, z);
         }
         else
             ImGui::Text("Mouse Position: <invalid>");

@@ -17,7 +17,7 @@ using Iterator = std::vector<std::shared_ptr<AbstractObject>>::iterator;
 class AbstractObject
 {
 public:
-    AbstractObject() { this->id = nextid++; };
+    AbstractObject() { this->id = nextid++; this->transform = glm::mat4x4(1.0f); };
     virtual ~AbstractObject() = default;
 
     virtual bool IsDrawable()  { return false; }

@@ -17,14 +17,14 @@ int Buffer::height = 720;
 bool DrawManager::do_we_draw = true;
 
 std::vector<std::vector<float>> Buffer::original_buffer
-= std::vector<std::vector<float>>(height, std::vector<float>(width, 1.0f));
+= std::vector<std::vector<float>>(1080, std::vector<float>(1980, 1.0f));
 
 std::vector<std::vector<float>> Buffer::depth_buffer = original_buffer;
 std::vector<std::vector<float>> Buffer::light_depth_buffer = original_buffer;
 
 
 std::vector<std::vector<uint32_t>> Buffer::original_frame_buffer
-= std::vector<std::vector<uint32_t>>(height, std::vector<uint32_t>(width, 0));
+= std::vector<std::vector<uint32_t>>(1080, std::vector<uint32_t>(1980, 0));
 
 std::vector<std::vector<uint32_t>> Buffer::frame_buffer = original_frame_buffer;
 std::vector<std::vector<uint32_t>> Buffer::light_frame_buffer = original_frame_buffer;
@@ -36,20 +36,20 @@ void DrawManager::set_window_size(int w, int h)
     Buffer::width = w;
     Buffer::height = h;
 
-    Buffer::original_buffer
-    = std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 1.0f));
-    Buffer::depth_buffer = Buffer::original_buffer;
+    // Buffer::original_buffer
+    // = std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 1.0f));
+    // Buffer::depth_buffer = Buffer::original_buffer;
 
-    Buffer::original_frame_buffer
-    = std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x00000000));
-    Buffer::frame_buffer = Buffer::original_frame_buffer;
+    // Buffer::original_frame_buffer
+    // = std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x00000000));
+    // Buffer::frame_buffer = Buffer::original_frame_buffer;
 }
 
 void DrawManager::draw_scene_no_lights()
 {
     std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
-    auto objects = ControlSystem::SceneManager::get_objects();
+    auto objects = ControlSystem::SceneManager::get_drawable_objects();
     std::shared_ptr<AbstractVisitor> visitor = std::make_shared<DrawVisitor>(camera);
 
     Buffer::frame_buffer = Buffer::original_frame_buffer;
@@ -87,12 +87,15 @@ void DrawManager::draw_scene_no_lights()
 
 void DrawManager::draw_scene()
 {
+
+    //Алгоритм, ответственный за отрисовку трехмерной графики (Решение задачи построения реалистического изображения)
+    //Привет курову!
     if (DrawManager::do_we_draw)
     {
         std::cout << "Drawing!" << std::endl;
         std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
-        auto objects = ControlSystem::SceneManager::get_objects();
+        auto objects = ControlSystem::SceneManager::get_drawable_objects();
         auto lights = ControlSystem::SceneManager::get_lights();
         Buffer::frame_buffer = Buffer::original_frame_buffer;
         Buffer::depth_buffer = Buffer::original_buffer;
@@ -119,8 +122,6 @@ void DrawManager::draw_scene()
         }
         DrawManager::do_we_draw = false;
     }
-
-
     //apply frame_buffer to screen
     for (int y = 0; y < Buffer::height; ++y)
     {
@@ -133,6 +134,7 @@ void DrawManager::draw_scene()
             int b = (color & 0x0000FF00) >> 8;
             int a = color & 0x000000FF;
 
+            //Попозже будут все два вида интенсивности считаться
             // r /= (Buffer::depth_buffer[y][x] + 2.5f);
             // g /= (Buffer::depth_buffer[y][x] + 2.5f);
             // b /= (Buffer::depth_buffer[y][x] + 2.5f);
@@ -141,9 +143,6 @@ void DrawManager::draw_scene()
             Graphics::SDLCanvas::set_pixel(x, y);
         }
     }
-
-
-    return;
 }
 
 
@@ -193,9 +192,14 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
                 if (x2 >= 0 && x2 < 1280 && y2 >= 0 && y2 < 720 && z2 > 0)
                 {
                     //if z is not far from shadowmap's z
-                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.0025f)
+                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.0015f)
                     {
                         Buffer::frame_buffer[y][x] = Buffer::light_frame_buffer[y2][x2];
+                    }
+                    else
+                    {
+                        //dark gray
+                        Buffer::frame_buffer[y][x] = 0x22222222;
                     }
                 }
             }

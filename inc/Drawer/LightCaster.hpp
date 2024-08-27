@@ -35,6 +35,10 @@ void LightCaster::process_facet(const Facet& facet)
     p1 = glm::vec3(glm::project(p1, model, proj, viewport));
     p2 = glm::vec3(glm::project(p2, model, proj, viewport));
 
+    if (glm::isnan(p0.x) || glm::isnan(p0.y) || glm::isnan(p0.z) || glm::isnan(p1.x) || glm::isnan(p1.y) || glm::isnan(p1.z) || glm::isnan(p2.x) || glm::isnan(p2.y) || glm::isnan(p2.z))
+    {
+        return;
+    }
 
     // Sort the points in order of Y coordinate, so first point is the top one.
     // In case of equal Y coordinates, sort according to X coordinates.
@@ -68,7 +72,7 @@ void LightCaster::process_facet(const Facet& facet)
     std::vector<GLMSlope> sides(2);
     sides[!shortside] = GLMSlope(p0, p2, p2.y - p0.y);
 
-    for (float y = p0.y, endy = p0.y; ; ++y)
+    for (float y = p0.y, endy = p0.y; y > 0 && y < ControlSystem::Buffer::height; ++y)
     {
         if (y >= endy)
         {
@@ -87,6 +91,7 @@ void LightCaster::process_facet(const Facet& facet)
     }
 }
 
+#include <iostream>
 void LightCaster::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 {
     glm::vec3 p0 = A.get();
@@ -100,9 +105,9 @@ void LightCaster::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     //for future me to fix
     if (y < 0) y = 0;
-    if (y > ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
+    if (y >= ControlSystem::Buffer::height) y = ControlSystem::Buffer::height - 1;
     if (x0 < 0) x0 = 0;
-    if (x1 > ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
+    if (x1 >= ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
     for (; x0 < x1; ++x0)
     {

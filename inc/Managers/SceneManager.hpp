@@ -21,6 +21,20 @@ void SceneManager::add_object(std::shared_ptr<AbstractObject> object)
     scene->add_object(object);
 }
 
+std::vector<std::shared_ptr<AbstractObject>> SceneManager::get_drawable_objects()
+{
+    std::vector<std::shared_ptr<AbstractObject>> objects;
+    for (auto it = scene->begin(); it != scene->end(); ++it)
+    {
+        if ((*it)->IsDrawable())
+        {
+            objects.push_back(*it);
+        }
+    }
+    return objects;
+}
+
+
 std::vector<std::shared_ptr<AbstractObject>> SceneManager::get_objects()
 {
     std::vector<std::shared_ptr<AbstractObject>> objects;
@@ -111,6 +125,7 @@ void SceneManager::clear_scene()
 {
     scene->cameras.clear();
     scene->objects.clear();
+    scene->light_list.clear();
 }
 
 std::shared_ptr<Camera> SceneManager::get_main_camera()

@@ -7,8 +7,12 @@
 #include "Builders/BaseDirector.h"
 #include "Builders/SurfaceDirector.h"
 #include "Builders/DirectorCreator.h"
+#include "Light.h"
 #include "Readers/TXTFacetReader.h"
 #include "Readers/AbstractFacetReader.h"
+
+#include "SceneManager.h"
+#include <memory>
 
 
 namespace ControlSystem
@@ -38,7 +42,15 @@ namespace ControlSystem
 
             return myDirector->create();
         }
+
+        static std::shared_ptr<Camera> load_camera(const std::string& filename);
+
+        static std::shared_ptr<Light> load_light(const std::string& filename);
+
+        static void load_scene(const std::string& filename);
     };
 }
+
+#include "LoadManager.hpp"
 
 #endif

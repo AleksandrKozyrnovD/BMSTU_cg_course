@@ -44,6 +44,65 @@ namespace Actions
             float &x3, &y3, &z3;
             Action method;
         };
+
+        class GetCameraPos : public BaseCommand
+        {
+        using Action = void (*)(float &, float &, float &);
+        public:
+            GetCameraPos() = delete;
+            explicit GetCameraPos(float &x, float &y, float &z);
+            ~GetCameraPos() = default;
+
+            void Execute() override;
+        private:
+            float &x, &y, &z;
+            Action method;
+        };
+
+        class GetObjectTranslation : public BaseCommand
+        {
+        using Action = void (*)(size_t, float &, float &, float &);
+        public:
+            GetObjectTranslation() = delete;
+            explicit GetObjectTranslation(size_t id, float &x, float &y, float &z);
+            ~GetObjectTranslation() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float &x, &y, &z;
+            Action method;
+        };
+
+        class GetObjectRotation : public BaseCommand
+        {
+        using Action = void (*)(size_t, float &, float &, float &);
+        public:
+            GetObjectRotation() = delete;
+            explicit GetObjectRotation(size_t id, float &x, float &y, float &z);
+            ~GetObjectRotation() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float &x, &y, &z;
+            Action method;
+        };
+
+        class GetObjectScale : public BaseCommand
+        {
+        using Action = void (*)(size_t, float &, float &, float &);
+        public:
+            GetObjectScale() = delete;
+            explicit GetObjectScale(size_t id, float &x, float &y, float &z);
+            ~GetObjectScale() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float &x, &y, &z;
+            Action method;
+        };
     }
 }
 

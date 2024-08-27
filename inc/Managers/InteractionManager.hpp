@@ -15,7 +15,11 @@ void InteractionManager::get_world_pos(float &mouse_x, float &mouse_y, float &z)
 
     glm::vec4 viewport(0.0f, 0.0f, Buffer::width, Buffer::height);
 
-    float z_tmp = Buffer::depth_buffer[mouse_y][mouse_x];
+    float z_tmp;
+    if (mouse_x > 0 && mouse_x < Buffer::width && mouse_y > 0 && mouse_y < Buffer::height)
+        z_tmp = Buffer::depth_buffer[mouse_y][mouse_x];
+    else
+        z_tmp = 0.0f;
 
     glm::vec3 point(mouse_x, mouse_y, z_tmp);
 
@@ -41,4 +45,67 @@ void InteractionManager::get_camera_vectors(float &x1, float &y1, float &z1, flo
     x3 = camera->up.x;
     y3 = camera->up.y;
     z3 = camera->up.z;
+}
+
+void InteractionManager::get_camera_position(float &x, float &y, float &z)
+{
+    auto camera = ControlSystem::SceneManager::get_main_camera();
+
+    x = camera->get_center().x;
+    y = camera->get_center().y;
+    z = camera->get_center().z;
+}
+
+
+#include <glm/gtx/matrix_decompose.hpp>
+void InteractionManager::get_object_translation(size_t id, float &x, float &y, float &z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    glm::vec3 scale;
+    glm::quat rotation;
+    glm::vec3 translation;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(object->transform, scale, rotation, translation, skew,perspective);
+    // rotation = glm::conjugate(rotation);
+
+    x = translation.x;
+    y = translation.y;
+    z = translation.z;
+}
+
+
+void InteractionManager::get_object_rotation(size_t id, float &x, float &y, float &z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    glm::vec3 scale;
+    glm::quat rotation;
+    glm::vec3 translation;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(object->transform, scale, rotation, translation, skew,perspective);
+    rotation = glm::conjugate(rotation);
+
+    x = rotation.x;
+    y = rotation.y;
+    z = rotation.z;
+}
+
+void InteractionManager::get_object_scale(size_t id, float &x, float &y, float &z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    glm::vec3 scale;
+    glm::quat rotation;
+    glm::vec3 translation;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(object->transform, scale, rotation, translation, skew,perspective);
+    // rotation = glm::conjugate(rotation);
+
+    x = scale.x;
+    y = scale.y;
+    z = scale.z;
 }

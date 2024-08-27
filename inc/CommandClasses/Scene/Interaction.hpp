@@ -29,3 +29,52 @@ void GetCameraVectors::Execute()
 {
     (*method)(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 }
+
+
+GetCameraPos::GetCameraPos(float &x, float &y, float &z)
+    : x(x), y(y), z(z)
+{
+    this->method = ControlSystem::InteractionManager::get_camera_position;
+}
+
+void GetCameraPos::Execute()
+{
+    (*method)(x, y, z);
+}
+
+
+
+GetObjectTranslation::GetObjectTranslation(size_t id, float &x, float &y, float &z)
+    : x(x), y(y), z(z), id(id)
+{
+    this->method = ControlSystem::InteractionManager::get_object_translation;
+}
+
+void GetObjectTranslation::Execute()
+{
+    (*method)(id, x, y, z);
+}
+
+
+GetObjectScale::GetObjectScale(size_t id, float &x, float &y, float &z)
+    : x(x), y(y), z(z), id(id)
+{
+    this->method = ControlSystem::InteractionManager::get_object_scale;
+}
+
+void GetObjectScale::Execute()
+{
+    (*method)(id, x, y, z);
+}
+
+
+GetObjectRotation::GetObjectRotation(size_t id, float &x, float &y, float &z)
+    : x(x), y(y), z(z), id(id)
+{
+    this->method = ControlSystem::InteractionManager::get_object_rotation;
+}
+
+void GetObjectRotation::Execute()
+{
+    (*method)(id, x, y, z);
+}

@@ -44,7 +44,7 @@ switch (event.type)
             case SDL_MOUSEMOTION:
                 if (this->cursor_controls)
                 {
-                    std::cout << "Controls enabled" << std::endl;
+                    // std::cout << "Controls enabled" << std::endl;
 
                     dx = -event.motion.xrel;
                     dy = event.motion.yrel;

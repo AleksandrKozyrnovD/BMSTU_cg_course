@@ -22,6 +22,7 @@ namespace ControlSystem
         static void set_camera(std::shared_ptr<Camera> camera);
 
         static void add_object(std::shared_ptr<AbstractObject> object);
+        static std::vector<std::shared_ptr<AbstractObject>> get_drawable_objects();
         static std::vector<std::shared_ptr<AbstractObject>> get_objects();
         static std::shared_ptr<AbstractObject> get_object(std::size_t id);
         static std::vector<std::size_t> get_object_ids();

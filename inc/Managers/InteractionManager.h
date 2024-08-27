@@ -18,6 +18,13 @@ namespace ControlSystem
                                       float &x2, float &y2, float &z2,
                                       float &x3, float &y3, float &z3);
 
+        static void get_camera_position(float &x, float &y, float &z);
+
+        static void get_object_translation(size_t id, float &x, float &y, float &z);
+
+        static void get_object_rotation(size_t id, float &x, float &y, float &z);
+
+        static void get_object_scale(size_t id, float &x, float &y, float &z);
     };
 }
 

@@ -13,9 +13,9 @@ class Camera : public Undrawable
     friend class ScaleVisitor;
     friend class DrawVisitor;
 public:
-    Camera() = default;
+    Camera();
     Camera(double x, double y, double z);
-    Camera(const glm::vec3& center);
+    explicit Camera(const glm::vec3& center);
     Camera(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward);
     ~Camera() = default;
 

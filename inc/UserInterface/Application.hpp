@@ -1,5 +1,6 @@
 #include "AbstractObject.h"
 #include "Application.h"
+#include "Canvas.h"
 #include "DrawManager.h"
 #include "ImguiInterface.h"
 #include "imgui.h"
@@ -44,42 +45,9 @@ int Application::Application::run() {
 
     Facade::initialize();
     ImguiInterface::init_interface();
+    Graphics::SDLCanvas::set_renderer(m_window->get_native_renderer());
     
     float dx, dy;
-
-    glm::vec3 center = glm::vec3(0, 0, -2);
-    glm::vec3 up = glm::vec3(0, 1, 0);
-    glm::vec3 forward = glm::vec3(0, 0, 1);
-    std::shared_ptr<Camera> camera = std::make_shared<Camera>(center, up, forward);
-    std::shared_ptr<Light> light = std::make_shared<Light>(center + glm::vec3(0.0f, 0.0f, 0.0f), up, forward, 0xff000000);
-
-
-
-    std::shared_ptr<AbstractObject> obj2 = std::static_pointer_cast<AbstractObject>(camera);
-    std::shared_ptr<AbstractObject> obj4 = std::static_pointer_cast<AbstractObject>(light);
-
-    
-    DrawVisitor visitor(camera);
-
-
-    std::shared_ptr<AbstractObject> obj =
-    ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt");
-
-
-    std::shared_ptr<AbstractObject> obj3 =
-    ControlSystem::LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test1.txt");
-
-
-    Graphics::SDLCanvas::set_renderer(m_window->get_native_renderer());
-
-
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
-    ControlSystem::SceneManager::set_scene(scene);
-
-    ControlSystem::SceneManager::set_camera(camera);
-    ControlSystem::SceneManager::add_light(light);
-    ControlSystem::SceneManager::add_object(obj3);
-    ControlSystem::SceneManager::add_object(obj);
 
 
     IMGUI_CHECKVERSION();
@@ -92,7 +60,7 @@ int Application::Application::run() {
     ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
     ImGui_ImplSDLRenderer2_Init(m_window->get_native_renderer());
 
-    // std::shared_ptr<Camera> camera = nullptr;
+    std::shared_ptr<Camera> camera = nullptr;
     std::shared_ptr<AbstractObject> camera_obj = nullptr;
 
     m_running = true;
@@ -106,18 +74,27 @@ int Application::Application::run() {
             {
                 this->stop();
             }
+            if (event.type == SDL_WINDOWEVENT)
+            {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                {
+                    ControlSystem::DrawManager::do_we_draw = true;
+                    ControlSystem::DrawManager::set_window_size(event.window.data1, event.window.data2);
+                    std::cout << "Resized" << std::endl;
+                }
+            }
             #include "CodeFragments/InputSDL.hh"
         }
 
         ImguiInterface::draw_interface();
         ImGui::Render();
     
-
-        SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
-        SDL_RenderClear(m_window->get_native_renderer());
+        // if (ControlSystem::DrawManager::do_we_draw)
+        // {
+            SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
+            SDL_RenderClear(m_window->get_native_renderer());
+        // }
         //Risovanie zdes
-        // ControlSystem::TransformManager::rotate(obj, 1.0f, 1.0f, 1.0f);
-        // ControlSystem::TransformManager::rotate(obj2, 0.0f, 1.0f, 0.0f);
         ControlSystem::DrawManager::draw_scene();
 
 
