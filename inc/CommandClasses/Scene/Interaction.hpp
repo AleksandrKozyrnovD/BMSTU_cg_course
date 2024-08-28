@@ -78,3 +78,37 @@ void GetObjectRotation::Execute()
 {
     (*method)(id, x, y, z);
 }
+
+MoveObjectScene::MoveObjectScene(size_t id, float x, float y, float z)
+    : id(id), x(x), y(y), z(z)
+{
+    this->method = ControlSystem::InteractionManager::move_object;
+}
+
+void MoveObjectScene::Execute()
+{
+    (*method)(id, x, y, z);
+}
+
+RotateObjectScene::RotateObjectScene(size_t id, float x, float y, float z)
+    : id(id), x(x), y(y), z(z)
+{
+    this->method = ControlSystem::InteractionManager::rotate_object;
+}
+
+void RotateObjectScene::Execute()
+{
+    (*method)(id, x, y, z);
+}
+
+ScaleObjectScene::ScaleObjectScene(size_t id, float x, float y, float z)
+    : id(id), x(x), y(y), z(z)
+{
+    this->method = ControlSystem::InteractionManager::scale_object;
+}
+
+void ScaleObjectScene::Execute()
+{
+    (*method)(id, x, y, z);
+}
+

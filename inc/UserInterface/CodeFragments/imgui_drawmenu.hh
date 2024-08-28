@@ -86,54 +86,38 @@ void ImguiInterface::draw_menu()
         }
         if (ImGui::BeginMenu("List"))
         {
-            // const char* names[5] = { "Label1", "Label2", "Label3", "Label4", "Label5" };
-            // static int selected = -1;
-            // for (int n = 0; n < 5; n++)
-            // {
-            //     if (ImGui::Selectable(names[n], selected == n))
-            //         selected = n;
-            //     if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
-            //     {
-            //         selected = n;
-            //         ImGui::Text("This a popup for \"%s\"!", names[n]);
-            //         if (ImGui::Button("Close"))
-            //             ImGui::CloseCurrentPopup();
-            //         ImGui::EndPopup();
-            //     }
-            //     ImGui::SetItemTooltip("Right-click to open popup");
-            // }
-
             static int selected_list = -1;
             auto objects = ControlSystem::SceneManager::get_drawable_objects();
+            auto lights = ControlSystem::SceneManager::get_lights();
+            auto cameras = ControlSystem::SceneManager::get_cameras();
             for (int n = 0; n < objects.size(); n++)
             {
                 size_t id = objects[n]->get_id();
                 std::string name = "Object id: " + std::to_string(id);
                 if (ImGui::Selectable(name.c_str(), selected_list == n))
                     selected_list = n;
-                if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
-                {
+
+                #include "CodeFragments/imgui_list_interaction_popup.hh"
+            }
+            ImGui::Separator();
+            for (int n = 0; n < lights.size(); n++)
+            {
+                size_t id = lights[n]->get_id();
+                std::string name = "Light id: " + std::to_string(id);
+                if (ImGui::Selectable(name.c_str(), selected_list == n))
                     selected_list = n;
-                    float x, y, z;
-                    auto translation = Actions::Scene::GetObjectTranslation(id, x, y, z);
-                    ControlSystem::Facade::execute(&translation);
-                    ImGui::Text("Translation: (%.3f,%.3f,%.3f)", x, y, z);
 
-                    auto rotation = Actions::Scene::GetObjectRotation(id, x, y, z);
-                    ControlSystem::Facade::execute(&rotation);
-                    ImGui::Text("Rotation: (%.3f,%.3f,%.3f)", x, y, z);
+                #include "CodeFragments/imgui_list_interaction_popup.hh"
+            }
+            ImGui::Separator();
+            for (int n = 0; n < cameras.size(); n++)
+            {
+                size_t id = cameras[n]->get_id();
+                std::string name = "Camera id: " + std::to_string(id);
+                if (ImGui::Selectable(name.c_str(), selected_list == n))
+                    selected_list = n;
 
-                    auto scale = Actions::Scene::GetObjectScale(id, x, y, z);
-                    ControlSystem::Facade::execute(&scale);
-                    ImGui::Text("Scale: (%.3f,%.3f,%.3f)", x, y, z);
-
-
-                    ImGui::Text("This a popup for \"%s\"!", name.c_str());
-                    if (ImGui::Button("Close"))
-                        ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                }
-                ImGui::SetItemTooltip("Right-click to open popup");
+                #include "CodeFragments/imgui_list_interaction_popup.hh"
             }
 
             ImGui::EndMenu();

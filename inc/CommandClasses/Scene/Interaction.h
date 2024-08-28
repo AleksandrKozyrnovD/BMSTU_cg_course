@@ -103,6 +103,51 @@ namespace Actions
             float &x, &y, &z;
             Action method;
         };
+
+        class MoveObjectScene : public BaseCommand
+        {
+        using Action = void (*)(size_t, float, float, float);
+        public:
+            MoveObjectScene() = delete;
+            explicit MoveObjectScene(size_t id, float x, float y, float z);
+            ~MoveObjectScene() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float x, y, z;
+            Action method;
+        };
+
+        class RotateObjectScene : public BaseCommand
+        {
+        using Action = void (*)(size_t, float, float, float);
+        public:
+            RotateObjectScene() = delete;
+            explicit RotateObjectScene(size_t id, float x, float y, float z);
+            ~RotateObjectScene() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float x, y, z;
+            Action method;
+        };
+
+        class ScaleObjectScene : public BaseCommand
+        {
+        using Action = void (*)(size_t, float, float, float);
+        public:
+            ScaleObjectScene() = delete;
+            explicit ScaleObjectScene(size_t id, float x, float y, float z);
+            ~ScaleObjectScene() = default;
+
+            void Execute() override;
+        private:
+            size_t id;
+            float x, y, z;
+            Action method;
+        };
     }
 }
 

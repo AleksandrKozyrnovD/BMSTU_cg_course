@@ -1,4 +1,5 @@
 #include "Buffer.inl"
+#include "DrawManager.h"
 #include "InteractionManager.h"
 #include "SceneManager.h"
 
@@ -108,4 +109,28 @@ void InteractionManager::get_object_scale(size_t id, float &x, float &y, float &
     x = scale.x;
     y = scale.y;
     z = scale.z;
+}
+
+void InteractionManager::move_object(size_t id, float x, float y, float z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    ControlSystem::TransformManager::move(object, x, y, z);
+    ControlSystem::DrawManager::do_we_draw = true;
+}
+
+void InteractionManager::rotate_object(size_t id, float x, float y, float z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    ControlSystem::TransformManager::rotate(object, x, y, z);
+    ControlSystem::DrawManager::do_we_draw = true;
+}
+
+void InteractionManager::scale_object(size_t id, float x, float y, float z)
+{
+    auto object = ControlSystem::SceneManager::get_object(id);
+
+    ControlSystem::TransformManager::scale(object, x, y, z);
+    ControlSystem::DrawManager::do_we_draw = true;
 }

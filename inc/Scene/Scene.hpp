@@ -4,7 +4,7 @@ Scene::Scene()
 {
     this->objects = std::list<std::shared_ptr<AbstractObject>>();
     this->cameras = std::list<iterator>();
-    this->light_list = std::list<std::shared_ptr<Light>>();
+    this->light_list = std::vector<std::shared_ptr<Light>>();
 }
 
 
@@ -131,7 +131,7 @@ void Scene::remove_light(const size_t id)
     }
 }
 
-std::list<std::shared_ptr<Light>>& Scene::get_lights()
+std::vector<std::shared_ptr<Light>>& Scene::get_lights()
 {
     return this->light_list;
 }

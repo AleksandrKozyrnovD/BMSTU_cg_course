@@ -39,7 +39,7 @@ namespace ControlSystem
 
         static void add_light(std::shared_ptr<Light> light);
         static void remove_light(std::size_t id);
-        static std::list<std::shared_ptr<Light>>& get_lights();
+        static std::vector<std::shared_ptr<Light>>& get_lights();
     protected:
         static std::shared_ptr<Scene> scene;
         static std::shared_ptr<Camera> camera;

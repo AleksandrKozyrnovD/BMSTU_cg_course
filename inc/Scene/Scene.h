@@ -37,7 +37,7 @@ public:
 
     void add_light(const std::shared_ptr<Light> obj);
     void remove_light(const size_t id);
-    std::list<std::shared_ptr<Light>>& get_lights();
+    std::vector<std::shared_ptr<Light>>& get_lights();
 
     iterator begin();
     iterator end();
@@ -59,7 +59,7 @@ public:
 protected:
     std::list<std::shared_ptr<AbstractObject>> objects;
     std::list<iterator> cameras;
-    std::list<std::shared_ptr<Light>> light_list;
+    std::vector<std::shared_ptr<Light>> light_list;
 };
 
 #include "Scene.hpp"

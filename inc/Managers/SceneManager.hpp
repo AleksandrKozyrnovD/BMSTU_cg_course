@@ -163,7 +163,7 @@ void SceneManager::remove_light(std::size_t id)
     scene->remove_light(id);
 }
 
-std::list<std::shared_ptr<Light>>& SceneManager::get_lights()
+std::vector<std::shared_ptr<Light>>& SceneManager::get_lights()
 {
     return scene->get_lights();
 }
