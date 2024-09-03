@@ -1,4 +1,5 @@
 #include "AbstractObject.h"
+#include "AbstractVisitor.h"
 #include "Builders/SurfaceBuilder.h"
 #include "LoadManager.h"
 #include "Scene.h"
@@ -62,6 +63,86 @@ std::shared_ptr<Light> LoadManager::load_light(const std::string& filename)
     return std::make_shared<Light>(glm::vec3(x, y, z), glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), color);
 }
 
+std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::string& filename)
+{
+    //open file and check it's valid
+    if (filename.empty())
+        return nullptr;
+    
+    std::ifstream file(filename, std::ios_base::in);
+
+    if (!file.is_open())
+        return nullptr;
+    if (!file.good())
+        return nullptr;
+    
+    std::shared_ptr<CompositeObject> composite = std::make_shared<CompositeObject>();
+    //readline
+    std::string line;
+    float dx, dy, dz,
+          rx, ry, rz,
+          sx, sy, sz;
+    char objfile[512];
+    int type;
+    while (std::getline(file, line))
+    {
+        //parse
+        //Format: file type dx dy dz rx ry rz sx sy sz
+        //translation - dx dy dz
+        //rotation - rx ry rz
+        //scale - sx sy sz
+        /*
+        Types:
+        0 - camera
+        1 - object
+        2 - light
+        3 - composite
+        */
+
+        sscanf(line.c_str(), "%s %d %f %f %f %f %f %f %f %f %f",
+               objfile, &type,
+               &dx, &dy, &dz,
+               &rx, &ry, &rz,
+               &sx, &sy, &sz);
+        
+        std::shared_ptr<AbstractObject> obj;
+        std::shared_ptr<Light> light;
+        std::shared_ptr<Camera> camera;
+        switch (type)
+        {
+            case 0:
+                camera = LoadManager::load_camera(objfile);
+                composite->add(camera);
+                SceneManager::add_camera(camera);
+                break;
+            case 1:
+                obj = LoadManager::load_from_file<SurfaceBuilder>(objfile);
+                ControlSystem::TransformManager::move(obj, dx, dy, dz);
+                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                ControlSystem::TransformManager::scale(obj, sx, sy, sz);
+                composite->add(obj);
+                break;
+            case 2:
+                light = LoadManager::load_light(objfile);
+                obj = light;
+                ControlSystem::TransformManager::move(obj, dx, dy, dz);
+                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                SceneManager::add_light(light);
+                composite->add(obj);
+                break;
+            case 3:
+                obj = LoadManager::load_composite_object(objfile);
+                ControlSystem::TransformManager::move(obj, dx, dy, dz);
+                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                ControlSystem::TransformManager::scale(obj, sx, sy, sz);
+                composite->add(obj);
+                break;
+        }
+    }
+    file.close();
+
+    return composite;
+}
 
 void LoadManager::load_scene(const std::string& filename)
 {
@@ -98,11 +179,14 @@ void LoadManager::load_scene(const std::string& filename)
         3 - composite
         */
 
-        sscanf(line.c_str(), "%s %d %f %f %f %f %f %f %f %f %f",
+        if (sscanf(line.c_str(), "%s %d %f %f %f %f %f %f %f %f %f",
                objfile, &type,
                &dx, &dy, &dz,
                &rx, &ry, &rz,
-               &sx, &sy, &sz);
+               &sx, &sy, &sz) != 11)
+        {
+            break;
+        }
         
         std::shared_ptr<AbstractObject> obj;
         std::shared_ptr<Light> light;
@@ -131,6 +215,11 @@ void LoadManager::load_scene(const std::string& filename)
                 SceneManager::add_light(light);
                 break;
             case 3:
+                obj = LoadManager::load_composite_object(objfile);
+                ControlSystem::TransformManager::move(obj, dx, dy, dz);
+                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                ControlSystem::TransformManager::scale(obj, sx, sy, sz);
+                ControlSystem::SceneManager::add_object(obj);
                 break;
         }
     }

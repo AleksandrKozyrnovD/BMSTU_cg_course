@@ -22,6 +22,7 @@ public:
 
 protected:
     uint32_t color;
+    float diffusion_angle_cos;
     std::shared_ptr<Light>& light_source;
 
     void process_facet(const Facet& facet) override;

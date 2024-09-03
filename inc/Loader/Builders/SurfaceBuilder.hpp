@@ -1,4 +1,5 @@
 #include "Loader/Readers/AbstractFacetReader.h"
+#include "ModelType/Facet.h"
 #include "ModelType/SurfaceModel.h"
 #include "SurfaceBuilder.h"
 #include <memory>
@@ -10,6 +11,8 @@ SurfaceBuilder::SurfaceBuilder(std::shared_ptr<AbstractFacetReader> reader)
 
 void SurfaceBuilder::initialize()
 {
+    std::shared_ptr<SurfaceModel> newmodel(new SurfaceModel);
+    this->implementation = newmodel;
     return;
 }
 
@@ -35,7 +38,7 @@ bool SurfaceBuilder::create_facets()
 bool SurfaceBuilder::align_facets()
 {
     glm::vec3 center = this->implementation->get_center();
-    auto facets = this->implementation->get_surfaces();
+    std::list<Facet>& facets = this->implementation->get_surfaces();
 
     for (auto &facet : facets)
     {

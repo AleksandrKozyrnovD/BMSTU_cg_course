@@ -7,6 +7,7 @@
 #include "ZMapper.h"
 #include "LightCaster.h"
 #include "glm/ext/matrix_projection.hpp"
+#include "glm/matrix.hpp"
 
 
 using namespace ControlSystem;
@@ -112,13 +113,13 @@ void DrawManager::draw_scene()
         for (auto& light : lights)
         {
             std::shared_ptr<LightCaster> caster = std::make_shared<LightCaster>(camera, light);
-            ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_buffer; //reset depth buffer
-            ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_frame_buffer; //reset frame buffer
             for (auto &obj : objects)
             {
+                ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_buffer; //reset depth buffer
+                ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_frame_buffer; //reset frame buffer
                 obj->accept(caster);
+                DrawManager::process_from_viewpoint(light, camera, obj->transform);
             }
-            DrawManager::process_from_viewpoint(light, camera, glm::mat4(1.0f));
         }
         DrawManager::do_we_draw = false;
     }
@@ -134,17 +135,11 @@ void DrawManager::draw_scene()
             int b = (color & 0x0000FF00) >> 8;
             int a = color & 0x000000FF;
 
-            //Попозже будут все два вида интенсивности считаться
-            // r /= (Buffer::depth_buffer[y][x] + 2.5f);
-            // g /= (Buffer::depth_buffer[y][x] + 2.5f);
-            // b /= (Buffer::depth_buffer[y][x] + 2.5f);
-
             Graphics::SDLCanvas::set_color(r, g, b, a);
             Graphics::SDLCanvas::set_pixel(x, y);
         }
     }
 }
-
 
 void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, std::shared_ptr<Camera>& camera, glm::mat4 transform)
 {
@@ -160,9 +155,9 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
     int h = ControlSystem::Buffer::height;
     glm::vec4 viewport(0.0f, 0.0f, w, h);
 
-    for (int y = 0; y < 720; ++y)
+    for (int y = 0; y < h; ++y)
     {
-        for (int x = 0; x < 1280; ++x)
+        for (int x = 0; x < w; ++x)
         {
             float z = ControlSystem::Buffer::depth_buffer[y][x];
             // std::cout << "Initial z: " << z << std::endl;
@@ -176,31 +171,29 @@ void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, s
                 lightdepthbufferpoint = glm::vec3(
                     glm::unProject(lightdepthbufferpoint, transform, camera_proj, viewport));
                 
-                // std::cout << "World: " << lightdepthbufferpoint.x << " " << lightdepthbufferpoint.y << " " << lightdepthbufferpoint.z << std::endl;
-
-                //now to get the point in light coordinates
                 lightdepthbufferpoint = glm::vec3(
                     glm::project(lightdepthbufferpoint, transform, light_proj, viewport));
                 
-                // std::cout << "Light: " << lightdepthbufferpoint.x << " " << lightdepthbufferpoint.y << " " << lightdepthbufferpoint.z << std::endl;
-
 
                 int x2 = round(lightdepthbufferpoint.x);
                 int y2 = round(lightdepthbufferpoint.y);
                 float z2 = lightdepthbufferpoint.z;
 
-                if (x2 >= 0 && x2 < 1280 && y2 >= 0 && y2 < 720 && z2 > 0)
+                if (x2 >= 0 && x2 < w && y2 >= 0 && y2 < h/* && z2 > 0*/)
                 {
                     //if z is not far from shadowmap's z
-                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.0015f)
+                    if (fabs(ControlSystem::Buffer::light_depth_buffer[y2][x2] - z2) < 0.0025f)
                     {
                         Buffer::frame_buffer[y][x] = Buffer::light_frame_buffer[y2][x2];
                     }
                     else
                     {
-                        //dark gray
                         Buffer::frame_buffer[y][x] = 0x22222222;
                     }
+                }
+                else
+                {
+                    Buffer::frame_buffer[y][x] = 0x22222222;
                 }
             }
         }

@@ -5,13 +5,13 @@
 Light::Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward, const uint32_t& color)
     : Camera(center, up, forward), color(color)
 {
-    this->fov = 90;
+    this->fov = 45;
 }
 
 Light::Light(const Camera& camera, const uint32_t& color)
     : Camera(camera), color(color)
 {
-    this->fov = 90;
+    this->fov = 45;
 }
 
 

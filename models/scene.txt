@@ -1,4 +1,4 @@
 /home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/camera.txt 0 0 0 0 0 0 0 0 0 0
 /home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/light.txt 2 0 0 0 0 0 0 0 0 0
-/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test.txt 1 0 0 5 0 0 0 1 1 1
-/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models/test1.txt 1 0 0 5 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/cube1x1.model 1 0 0 5 0 0 0 1 1 1
+

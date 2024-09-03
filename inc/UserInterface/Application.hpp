@@ -35,7 +35,6 @@ Application::~Application()
     SDL_Quit();
 }
 
-#include "Builders/SurfaceBuilder.h"
 
 int Application::Application::run() {
     if (m_exit_status == 1)
@@ -64,6 +63,9 @@ int Application::Application::run() {
     std::shared_ptr<AbstractObject> camera_obj = nullptr;
 
     m_running = true;
+    /*
+    Скорее всего композит со светом и камерой будет поворачиваться неверно!
+    */
     while (m_running)
     {
         SDL_Event event{};

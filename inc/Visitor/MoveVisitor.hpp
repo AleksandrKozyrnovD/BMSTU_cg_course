@@ -39,5 +39,8 @@ void MoveVisitor::visit(Light& obj)
 
 void MoveVisitor::visit(CompositeObject& obj)
 {
-    obj.accept(std::make_shared<MoveVisitor>(*this));
+    // obj.accept(std::make_shared<MoveVisitor>(*this));
+    glm::mat4x4 transform = glm::mat4x4(1.0f);
+    transform = glm::translate(transform, this->coordinate);
+    obj.transform = transform * obj.transform;
 }

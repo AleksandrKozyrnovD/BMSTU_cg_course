@@ -26,7 +26,7 @@ std::vector<std::shared_ptr<AbstractObject>> SceneManager::get_drawable_objects(
     std::vector<std::shared_ptr<AbstractObject>> objects;
     for (auto it = scene->begin(); it != scene->end(); ++it)
     {
-        if ((*it)->IsDrawable())
+        if ((*it)->IsDrawable() || (*it)->IsComposite())
         {
             objects.push_back(*it);
         }

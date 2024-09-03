@@ -22,8 +22,11 @@ void ZMapper::process_facet(const Facet& facet)
     glm::mat4x4 projection = camera->get_perspective_matrix();
     glm::mat4x4 view = camera->get_view_matrix();
     glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
-    // glm::vec4 viewport(0.0f, 0.0f, 1280.0f, 720.0f);
 
+    //back face culling. Normal is in local coordinates
+    glm::vec3 normal = glm::normalize(this->transform * glm::vec4(facet.normal, 0.0f)); //in world coordinates
+    normal = glm::normalize(view * glm::vec4(normal, 0.0f)); //in camera coordinates
+    if (glm::dot(normal, camera->forward) <= 0.0f) return;
 
     glm::vec3 p0 = facet.A;
     glm::vec3 p1 = facet.B;
@@ -126,11 +129,13 @@ void ZMapper::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
 void ZMapper::visit(Model& obj)
 {
-    this->transform = obj.transform;
+    glm::mat4 back = this->transform;
+    this->transform = obj.transform * this->transform;
     for (const Facet& facet : obj.model->get_surfaces())
     {
         this->process_facet(facet);
     }
+    this->transform = back;
 }
 
 
@@ -142,7 +147,13 @@ void ZMapper::visit(Camera& obj)
 
 void ZMapper::visit(CompositeObject& obj)
 {
-    obj.accept(std::make_shared<ZMapper>(*this));
+    glm::mat4x4 back = this->transform;
+    this->transform = obj.transform * this->transform;
+    for (auto& element : obj)
+    {
+        element->accept(std::make_shared<ZMapper>(*this));
+    }
+    this->transform = back;
 }
 
 void ZMapper::visit(Light& obj)

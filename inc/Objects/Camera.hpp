@@ -1,6 +1,8 @@
+#include "Buffer.inl"
 #include "Camera.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#include "DrawManager.h"
 
 Camera::Camera()
     : up(0, 1, 0), forward(0, 0, 1), right(1, 0, 0)
@@ -45,5 +47,6 @@ glm::mat4x4 Camera::get_view_matrix() const
 
 glm::mat4x4 Camera::get_perspective_matrix() const
 {
-    return glm::perspective(glm::radians(this->fov), 1.0f, 0.1f, 1000.0f);
+    float aspect = float(ControlSystem::Buffer::width) / float(ControlSystem::Buffer::height);
+    return glm::perspective(glm::radians(this->fov), aspect, 0.1f, 10.0f);
 }

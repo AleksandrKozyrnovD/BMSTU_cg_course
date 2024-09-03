@@ -36,5 +36,8 @@ void ScaleVisitor::visit(Light& obj)
 
 void ScaleVisitor::visit(CompositeObject& obj)
 {
-    obj.accept(std::make_shared<ScaleVisitor>(*this));
+    // obj.accept(std::make_shared<ScaleVisitor>(*this));
+    glm::mat4x4 transform = glm::mat4x4(1.0f);
+    transform = glm::scale(transform, this->coordinate);
+    obj.transform = transform * obj.transform;
 }

@@ -43,6 +43,8 @@ namespace ControlSystem
             return myDirector->create();
         }
 
+        static std::shared_ptr<AbstractObject> load_composite_object(const std::string& filename);
+
         static std::shared_ptr<Camera> load_camera(const std::string& filename);
 
         static std::shared_ptr<Light> load_light(const std::string& filename);
