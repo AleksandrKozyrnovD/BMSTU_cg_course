@@ -1,5 +1,6 @@
 #include "AbstractObject.h"
 #include "Application.h"
+#include "Buffer.inl"
 #include "Canvas.h"
 #include "DrawManager.h"
 #include "ImguiInterface.h"
@@ -24,7 +25,7 @@ Application::Application()
     {
         m_exit_status = 1;
     }
-    this->m_window = std::make_unique<Window>(Window::Settings{"Application"});
+    this->m_window = std::make_unique<Window>(Window::Settings{.title="Application"});
 }
 
 Application::~Application()
@@ -63,9 +64,9 @@ int Application::Application::run() {
     std::shared_ptr<AbstractObject> camera_obj = nullptr;
 
     m_running = true;
-    /*
-    Скорее всего композит со светом и камерой будет поворачиваться неверно!
-    */
+    // ControlSystem::DrawManager::set_window_size(Buffer::width, Buffer::height);
+    ControlSystem::DrawManager::set_window_size(this->m_window->settings.width, this->m_window->settings.height);
+
     while (m_running)
     {
         SDL_Event event{};
@@ -97,7 +98,8 @@ int Application::Application::run() {
             SDL_RenderClear(m_window->get_native_renderer());
         // }
         //Risovanie zdes
-        ControlSystem::DrawManager::draw_scene();
+        ControlSystem::DrawManager::draw_scene_no_lights();
+        // ControlSystem::DrawManager::draw_scene();
 
 
         

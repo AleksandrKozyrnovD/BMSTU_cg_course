@@ -52,6 +52,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Managers")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/UserInterface")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Canvas")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Drawer")
+target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Drawer/lights")
+target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Drawer/nolights")
+
 
 
 

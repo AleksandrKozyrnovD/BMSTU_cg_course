@@ -14,6 +14,9 @@ public:
     Light(const Camera& camera, const uint32_t& color);
     ~Light() override = default;
 
+    glm::mat4x4 get_perspective_matrix() const;
+
+
     void accept(std::shared_ptr<AbstractVisitor> visitor) override;
 
     float intensity = 1.0f;

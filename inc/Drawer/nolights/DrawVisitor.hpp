@@ -23,6 +23,7 @@ DrawVisitor::DrawVisitor(std::shared_ptr<Camera>& camera)
     : Drawer(camera)
 {}
 
+#include <iostream>
 void DrawVisitor::process_facet(const Facet& facet)
 {
     /*
@@ -32,37 +33,36 @@ void DrawVisitor::process_facet(const Facet& facet)
     glm::mat4x4 model = this->transform;
     glm::mat4x4 projection = camera->get_perspective_matrix();
     glm::mat4x4 view = camera->get_view_matrix();
-    glm::vec4 viewport(0.0f, 0.0f, 1280.0f, 720.0f);
+    glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
+
+    //back face culling. Normal is in local coordinates <<<!!!NOT!!!DONE!!!>>>
+    // glm::vec3 normal = glm::normalize(this->transform * glm::vec4(facet.normal, 0.0f)); //in world coordinates
+    // normal = glm::normalize(view * glm::vec4(normal, 0.0f)); //in camera coordinates
+    // if (glm::dot(normal, camera->forward) <= 0.0f) return;
 
     glm::vec3 p0 = facet.A;
     glm::vec3 p1 = facet.B;
     glm::vec3 p2 = facet.C;
 
-    //apply model
-    p0 = glm::vec3(model * glm::vec4(p0, 1.0f));
-    p1 = glm::vec3(model * glm::vec4(p1, 1.0f));
-    p2 = glm::vec3(model * glm::vec4(p2, 1.0f));
 
-    //apply view
-    p0 = glm::vec3(view * glm::vec4(p0, 1.0f));
-    p1 = glm::vec3(view * glm::vec4(p1, 1.0f));
-    p2 = glm::vec3(view * glm::vec4(p2, 1.0f));
+    glm::mat4 proj = projection * view;
 
-    //remember old z
-    // float z0 = p0.z;
-    // float z1 = p1.z;
-    // float z2 = p2.z;
+    glm::vec3 test1 = glm::vec3(0.0f, 0.0f, 5.0f);
+    glm::vec3 test2 = glm::vec3(0.0f, 0.0f, -1.0f);
 
     //project
-    p0 = glm::vec3(glm::project(p0, glm::mat4x4(1.0f), projection, viewport));
-    p1 = glm::vec3(glm::project(p1, glm::mat4x4(1.0f), projection, viewport));
-    p2 = glm::vec3(glm::project(p2, glm::mat4x4(1.0f), projection, viewport));
+    p0 = glm::vec3(glm::project(p0, model, proj, viewport));
+    p1 = glm::vec3(glm::project(p1, model, proj, viewport));
+    p2 = glm::vec3(glm::project(p2, model, proj, viewport));
 
-
-    // //apply z
-    // p0.z = z0;
-    // p1.z = z1;
-    // p2.z = z2;
+    if (glm::isnan(p0.x) || glm::isnan(p0.y) || glm::isnan(p0.z) || glm::isnan(p1.x) || glm::isnan(p1.y) || glm::isnan(p1.z) || glm::isnan(p2.x) || glm::isnan(p2.y) || glm::isnan(p2.z))
+    {
+        return;
+    }
+    if (p0.z < 1.0f || p1.z < 1.0f || p2.z < 1.0f)
+    {
+        return;
+    }
 
     // Sort the points in order of Y coordinate, so first point is the top one.
     // In case of equal Y coordinates, sort according to X coordinates.
@@ -115,6 +115,7 @@ void DrawVisitor::process_facet(const Facet& facet)
     }
 }
 
+
 void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 {
     glm::vec3 p0 = A.get();
@@ -123,8 +124,11 @@ void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
     int x0 = p0.x;
     int x1 = p1.x;
+    float z = p0.z;
 
     if (x0 > x1) std::swap(x0, x1);
+    // float dz = (p1.z - p0.z) / (float)(x1 - x0);
+    float dz = (p0.z - p1.z) / (float)(x0 - x1);
 
     //for future me to fix
     if (y < 0) y = 0;
@@ -132,12 +136,32 @@ void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
     if (x0 < 0) x0 = 0;
     if (x1 >= ControlSystem::Buffer::width) x1 = ControlSystem::Buffer::width - 1;
 
-    for (; x0 < x1; ++x0)
+    // if (y < 0)
+    // {
+    //     x0 += (x1 - x0) / (y - p0.y) * (-y);
+    //     y = 0;
+    // }
+    // if (y >= ControlSystem::Buffer::height)
+    // {
+    //     x0 += (x1 - x0) * (ControlSystem::Buffer::height - 1 - y);
+    //     y = ControlSystem::Buffer::height - 1;
+    // }
+
+    // if (x0 < 0)
+    // {
+    //     x0 = 0;
+    // }
+    // if (x1 >= ControlSystem::Buffer::width)
+    // {
+    //     x1 = ControlSystem::Buffer::width - 1;
+    // }
+
+    for (; x0 < x1; ++x0, z += dz)
     {
-        if (ControlSystem::Buffer::depth_buffer[y][x0] < p0.z && p0.z > 0.1f) //facet is not behind camera so > 0.1f
+        if (ControlSystem::Buffer::depth_buffer[y][x0] < z && z > 0.1f && z < 10.0f) //facet is not behind camera so > 0.1f
         {
             ControlSystem::Buffer::frame_buffer[y][x0] = this->color;
-            ControlSystem::Buffer::depth_buffer[y][x0] = p0.z;
+            ControlSystem::Buffer::depth_buffer[y][x0] = z;
         }
     }
 

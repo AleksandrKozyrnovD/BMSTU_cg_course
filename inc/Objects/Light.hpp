@@ -19,3 +19,8 @@ void Light::accept(std::shared_ptr<AbstractVisitor> visitor)
 {
     visitor->visit(*this);
 }
+
+glm::mat4x4 Light::get_perspective_matrix() const
+{
+    return glm::perspective(glm::radians(this->fov), 1.0f, 0.1f, 10.0f);
+}
