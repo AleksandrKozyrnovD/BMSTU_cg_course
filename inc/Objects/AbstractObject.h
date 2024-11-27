@@ -37,6 +37,8 @@ public:
     glm::vec3& get_center() { return this->center; }
 
     glm::mat4x4 transform = glm::mat4x4(1.0f);
+
+    bool show = true;
 protected:
     std::size_t id;
     static std::size_t nextid;

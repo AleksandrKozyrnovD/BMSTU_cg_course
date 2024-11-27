@@ -1,4 +1,7 @@
+#include "Camera.h"
+#include "ModelType/Facet.h"
 #include "Scene.h"
+#include <memory>
 
 Scene::Scene()
 {
@@ -134,4 +137,48 @@ void Scene::remove_light(const size_t id)
 std::vector<std::shared_ptr<Light>>& Scene::get_lights()
 {
     return this->light_list;
+}
+
+
+void Scene::set_camerav2(const std::shared_ptr<CameraV2>& camera)
+{
+    this->cam2 = camera;
+}
+
+std::shared_ptr<CameraV2>& Scene::get_camerav2()
+{
+    return this->cam2;
+}
+
+void Scene::set_lightv2(const std::shared_ptr<LightV2>& light)
+{
+    this->light2 = light;
+}
+
+std::shared_ptr<LightV2>& Scene::get_lightv2()
+{
+    return this->light2;
+}
+
+
+std::list<Facet> Scene::get_facets()
+{
+    std::list<Facet> facets;
+    std::shared_ptr<Model> m;
+    for (auto& obj : this->objects)
+    {
+        if (obj->IsDrawable())
+        {
+            m = std::dynamic_pointer_cast<Model>(obj);
+            if (m != nullptr)
+            {
+                for (auto& facet : m->model->get_surfaces())
+                {
+                    facets.push_back(facet);
+                }
+            }
+        }
+    }
+
+    return facets;
 }

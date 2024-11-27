@@ -1,5 +1,6 @@
 #include "TXTFacetReader.h"
 #include <utility>
+#include <iostream>
 
 TXTFacetReader::TXTFacetReader(const std::string& filename)
 {

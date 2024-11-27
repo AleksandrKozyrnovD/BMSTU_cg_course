@@ -29,7 +29,7 @@ void ImguiInterface::draw_overlay()
     if (ImGui::Begin("Example: Simple overlay", ImguiInterface::b_overlay, window_flags))
     {
         // IMGUI_DEMO_MARKER("Examples/Simple Overlay");
-        ImGui::Text("Mouse Position\n");
+        ImGui::Text("Overlay\n");
         ImGui::Separator();
         if (ImGui::IsMousePosValid())
         {

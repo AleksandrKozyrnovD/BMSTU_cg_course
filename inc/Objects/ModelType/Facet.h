@@ -14,6 +14,7 @@ class Facet : public Surface
 friend class DrawVisitor;
 friend class ZMapper;
 friend class LightCaster;
+friend class NewDrawVisitor;
 
 public:
     Facet() = default;

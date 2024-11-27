@@ -1,0 +1,4 @@
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 0 0 0 0 0 0 2 0.5 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_dom1.model 1 0.45 0 0.46 90 0 90 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_dom1.model 1 0.45 0 -0.46 90 0 90 1 1 1
+

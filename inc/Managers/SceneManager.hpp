@@ -1,10 +1,25 @@
+// #include "AbstractObject.h"
+#include "Builders/SurfaceBuilder.h"
+#include "Camera.h"
+#include "Light.h"
+#include "LoadManager.h"
+#include "ModelType/Facet.h"
+#include "TransformManager.h"
 #include "SceneManager.h"
+#include <memory>
+
 
 using namespace ControlSystem;
 
 
-std::shared_ptr<Scene> SceneManager::scene = std::shared_ptr<Scene>();
-std::shared_ptr<Camera> SceneManager::camera = std::shared_ptr<Camera>();
+// std::shared_ptr<Scene> SceneManager::scene = std::shared_ptr<Scene>();
+// std::shared_ptr<Camera> SceneManager::camera = std::shared_ptr<Camera>();
+
+std::shared_ptr<Scene> ControlSystem::SceneManager::scene = std::shared_ptr<Scene>();
+std::shared_ptr<Camera> ControlSystem::SceneManager::camera = std::shared_ptr<Camera>();
+Map ControlSystem::SceneManager::map_of_plots = Map();
+
+
 
 std::shared_ptr<Scene> SceneManager::get_scene()
 {
@@ -168,69 +183,87 @@ std::vector<std::shared_ptr<Light>>& SceneManager::get_lights()
     return scene->get_lights();
 }
 
-
-// void SceneManager::make_composite(std::vector<size_t> ids)
-// {
-//     std::vector<std::shared_ptr<AbstractObject>> objects;
-//     for (auto it = ids.begin(); it!= ids.end(); ++it) {
-//         objects.push_back(get_object(*it));
-//     }
-//     scene->add_composite(objects);
-// }
-
-
-// std::shared_ptr<Scene> SceneManager::get_scene()
-// {
-//     return scene;
-// }
-
 void SceneManager::set_scene(std::shared_ptr<Scene> scene)
 {
     SceneManager::scene = scene;
 }
 
-// std::shared_ptr<Camera>& SceneManager::get_camera()
-// {
-//     return camera;
-// }
+Map& SceneManager::get_map()
+{
+    return ControlSystem::SceneManager::map_of_plots;
+}
 
-// void SceneManager::set_camera(std::shared_ptr<Camera> camera)
-// {
-//     camera = camera;
-// }
+void SceneManager::set_map(Map m)
+{
+    for (int i = 0; i < map_of_plots.w; ++i)
+    {
+        for (int j = 0; j < map_of_plots.h; ++j)
+        {
+            if (map_of_plots.map[i][j].floor != nullptr)
+            {
+                SceneManager::remove_object(map_of_plots.map[i][j].floor->get_id());
+            }
+            if (map_of_plots.map[i][j].object != nullptr)
+            {
+                SceneManager::remove_object(map_of_plots.map[i][j].object->get_id());
+            }
+        }
+    }
 
-// void SceneManager::set_camera(int id)
-// {
-//     std::shared_ptr<Camera> obj = get_scene()->get_cameras().at(id);
-//     set_camera(obj);
-// }
+    SceneManager::map_of_plots = m;
+}
 
-// void SceneManager::add_camera(std::shared_ptr<Camera> camera)
-// {
-//     scene->add_camera(camera);
-// }
+void SceneManager::fill_map()
+{
+    std::shared_ptr<AbstractObject> floor = nullptr;
 
-// void SceneManager::add_object(std::shared_ptr<AbstractObject>& object)
-// {
-//     scene->add_model(object);
-// }
+    std::shared_ptr<Light> light = std::make_shared<Light>(
+        glm::vec3(1.0f, 1.0f, -10.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f),
+        0
+    );
+    for (size_t i = 0; i < map_of_plots.w; ++i)
+    {
+        for (size_t j = 0; j < map_of_plots.h; ++j)
+        {
+            floor = LoadManager::load_from_file<SurfaceBuilder>("/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/flat.model");
+            if (floor != nullptr)
+            {
+                floor->show = false;
+                ControlSystem::TransformManager::move(floor, 1.0f * i, 0.0f, 1.0f * j);
+                ControlSystem::SceneManager::add_object(floor);
+                map_of_plots.map[i][j].floor = floor;
+            }
+        }
+    }
 
-// std::vector<std::shared_ptr<AbstractObject>>& SceneManager::get_objects()
-// {
-//     return scene->get_models();
-// }
+    ControlSystem::SceneManager::add_light(light);
+}
 
-// void SceneManager::remove_object(int id)
-// {
-//     scene->remove_model(id);
-// }
 
-// void SceneManager::remove_camera(int id)
-// {
-//     scene->remove_camera(id);
-// }
+void SceneManager::set_scene_camera(const std::shared_ptr<CameraV2> &camera)
+{
+    SceneManager::scene->set_camerav2(camera);
+}
 
-// std::shared_ptr<AbstractObject> SceneManager::get_object(int id)
-// {
-//     return scene->get_object(id);
-// }
+void SceneManager::set_scene_light(const std::shared_ptr<LightV2> &light)
+{
+    SceneManager::scene->set_lightv2(light);
+}
+
+std::shared_ptr<CameraV2>& SceneManager::get_scene_camera()
+{
+    return SceneManager::scene->get_camerav2();
+}
+
+std::shared_ptr<LightV2>& SceneManager::get_scene_light()
+{
+    return SceneManager::scene->get_lightv2();
+}
+
+
+std::list<Facet> SceneManager::get_scene_facets()
+{
+    return SceneManager::scene->get_facets();
+}

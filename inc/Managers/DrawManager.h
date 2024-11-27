@@ -3,6 +3,7 @@
 
 #include "BaseManager.h"
 #include "Light.h"
+#include "Application.h"
 
 #include <memory>
 
@@ -15,11 +16,13 @@ namespace ControlSystem
         DrawManager() = delete;
         ~DrawManager() = default;
 
-        static void set_window_size(int w, int h);
+        static void set_window_size(int w, int h, Window::Settings& settings);
 
         static void draw_scene_no_lights();
 
         static void draw_scene();
+
+        static void new_draw_scene();
 
         static bool do_we_draw;
     

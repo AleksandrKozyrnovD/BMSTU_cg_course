@@ -2,8 +2,11 @@
 #define __SCENE_MANAGER_H__
 
 #include "BaseManager.h"
+#include "Camera.h"
 #include "Light.h"
+#include "ModelType/Facet.h"
 #include "Scene.h"
+#include "Map/Map.h"
 #include <memory>
 
 namespace ControlSystem
@@ -40,9 +43,24 @@ namespace ControlSystem
         static void add_light(std::shared_ptr<Light> light);
         static void remove_light(std::size_t id);
         static std::vector<std::shared_ptr<Light>>& get_lights();
+
+        static Map& get_map();
+        static void set_map(Map map);
+        static void fill_map();
+
+
+        static std::shared_ptr<CameraV2>& get_scene_camera();
+        static std::shared_ptr<LightV2>& get_scene_light();
+
+        static void set_scene_camera(const std::shared_ptr<CameraV2>& camera);
+        static void set_scene_light(const std::shared_ptr<LightV2>& light);
+
+        static std::list<Facet> get_scene_facets();
+
     protected:
         static std::shared_ptr<Scene> scene;
         static std::shared_ptr<Camera> camera;
+        static Map map_of_plots;
     };
 }
 

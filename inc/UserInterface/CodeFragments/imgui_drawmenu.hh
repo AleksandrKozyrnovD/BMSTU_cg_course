@@ -1,8 +1,12 @@
 #include "CommandClasses/Scene/Interaction.h"
 #include "DrawManager.h"
 #include "Facade.h"
+#include "ImguiInterface.h"
 #include "LoadManager.h"
 #include "imgui.h"
+
+
+
 void ImguiInterface::draw_menu()
 {
     /*
@@ -12,17 +16,7 @@ void ImguiInterface::draw_menu()
         Save As
         New
     Edit:
-        Add Object
-        Delete Object
-        Rotate Object
-        Move Object
-        Scale Object
-        list of objects
-            - if clicked, show options
-                - Delete
-                - Rotate
-                - Move
-                - Scale
+        Open editor
     List:
         objects....
     View:
@@ -62,26 +56,31 @@ void ImguiInterface::draw_menu()
 
         if (ImGui::BeginMenu("Edit"))
         {
-            if (ImGui::MenuItem("Add Object"))
+            if (ImGui::MenuItem("Open Editor"))
             {
-                ;
+                // *ImguiInterface::b_show_model_browser = true;
+                *ImguiInterface::b_map_grid = true;
             }
-            if (ImGui::MenuItem("Delete Object"))
-            {
-                ;
-            }
-            if (ImGui::MenuItem("Rotate Object"))
-            {
-                ;
-            }
-            if (ImGui::MenuItem("Move Object"))
-            {
-                ;
-            }
-            if (ImGui::MenuItem("Scale Object"))
-            {
-                ;
-            }
+            // if (ImGui::MenuItem("Add Object"))
+            // {
+            //     *ImguiInterface::b_show_model_browser = true;
+            // }
+            // if (ImGui::MenuItem("Delete Object"))
+            // {
+            //     ;
+            // }
+            // if (ImGui::MenuItem("Rotate Object"))
+            // {
+            //     ;
+            // }
+            // if (ImGui::MenuItem("Move Object"))
+            // {
+            //     ;
+            // }
+            // if (ImGui::MenuItem("Scale Object"))
+            // {
+            //     ;
+            // }
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("List"))
@@ -92,6 +91,10 @@ void ImguiInterface::draw_menu()
             auto cameras = ControlSystem::SceneManager::get_cameras();
             for (int n = 0; n < objects.size(); n++)
             {
+                if (!objects[n]->show)
+                {
+                    continue;
+                }
                 size_t id = objects[n]->get_id();
                 std::string name = "Object id: " + std::to_string(id);
                 if (ImGui::Selectable(name.c_str(), selected_list == n))
@@ -150,6 +153,7 @@ void ImguiInterface::draw_menu()
         if (ImGui::BeginMenu("Options"))
         {
             ImGui::Checkbox("Enable overlay", ImguiInterface::b_overlay);
+            ImGui::Checkbox("Enable map overlay", ImguiInterface::b_map_overlay);
             ImGui::EndMenu();
         }
 

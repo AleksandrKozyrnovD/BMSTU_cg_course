@@ -3,6 +3,7 @@
 
 #include "Drawable.h"
 #include "ModelType/AbstractSurfaceModel.h"
+// #include "normalzbuffer/NewDrawVisitor.h"
 
 
 class Model : public Drawable
@@ -14,6 +15,10 @@ class Model : public Drawable
     friend class Drawer;
     friend class ZMapper;
     friend class LightCaster;
+    friend class NewDrawVisitor;
+    friend class ShadowMapper;
+    friend class ZBufMapper;
+    friend class Scene;
 
 public:
     Model() = default;

@@ -1,9 +1,12 @@
 #include "AbstractObject.h"
 #include "Application.h"
 #include "Buffer.inl"
+#include "Camera.h"
 #include "Canvas.h"
 #include "DrawManager.h"
 #include "ImguiInterface.h"
+#include "Light.h"
+#include "SceneManager.h"
 #include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include "Facade.h"
@@ -14,6 +17,7 @@
 #include <SDL_timer.h>
 #include <SDL_video.h>
 #include <memory>
+
 
 
 
@@ -65,8 +69,11 @@ int Application::Application::run() {
 
     m_running = true;
     // ControlSystem::DrawManager::set_window_size(Buffer::width, Buffer::height);
-    ControlSystem::DrawManager::set_window_size(this->m_window->settings.width, this->m_window->settings.height);
+    ControlSystem::DrawManager::set_window_size(this->m_window->settings.width, this->m_window->settings.height, this->m_window->settings);
 
+    Map map(3);
+    ControlSystem::SceneManager::set_map(map);
+    ControlSystem::SceneManager::fill_map();
     while (m_running)
     {
         SDL_Event event{};
@@ -82,7 +89,8 @@ int Application::Application::run() {
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED)
                 {
                     ControlSystem::DrawManager::do_we_draw = true;
-                    ControlSystem::DrawManager::set_window_size(event.window.data1, event.window.data2);
+                    ControlSystem::DrawManager::set_window_size(
+                    event.window.data1, event.window.data2, m_window->settings);
                     std::cout << "Resized" << std::endl;
                 }
             }
@@ -98,8 +106,10 @@ int Application::Application::run() {
             SDL_RenderClear(m_window->get_native_renderer());
         // }
         //Risovanie zdes
-        ControlSystem::DrawManager::draw_scene_no_lights();
         // ControlSystem::DrawManager::draw_scene();
+        // ControlSystem::DrawManager::draw_scene_no_lights();
+        ControlSystem::DrawManager::new_draw_scene();
+
 
 
         

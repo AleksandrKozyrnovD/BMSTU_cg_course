@@ -1,3 +1,5 @@
+#include "AbstractVisitor.h"
+#include "Application.h"
 #include "Buffer.inl"
 #include "Canvas.h"
 #include "DrawManager.h"
@@ -8,21 +10,23 @@
 #include "LightCaster.h"
 #include "glm/ext/matrix_projection.hpp"
 #include "glm/matrix.hpp"
+#include "normalzbuffer/NewDrawVisitor.h"
+#include <memory>
 
 
 using namespace ControlSystem;
 
-int Buffer::width = 1920;
-int Buffer::height = 1080;
-int Buffer::shadow_res = 1080;
+int Buffer::width = 1940;
+int Buffer::height = 1200;
+int Buffer::shadow_res = 1200;
 
 bool DrawManager::do_we_draw = true;
 
 std::vector<std::vector<float>> Buffer::original_buffer
-= std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 1.0f));
+= std::vector<std::vector<float>>(Buffer::height, std::vector<float>(Buffer::width, 0.0f));
 
 std::vector<std::vector<uint32_t>> Buffer::original_frame_buffer
-= std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0));
+= std::vector<std::vector<uint32_t>>(Buffer::height, std::vector<uint32_t>(Buffer::width, 0x4444FFDD)); //bluish color
 
 
 
@@ -43,10 +47,13 @@ std::vector<std::vector<float>> Buffer::light_depth_buffer = original_light_dept
 std::vector<std::vector<uint32_t>> Buffer::light_frame_buffer = original_light_frame;
 
 
-void DrawManager::set_window_size(int w, int h)
+void DrawManager::set_window_size(int w, int h, Window::Settings& settings)
 {
     Buffer::width = w;
     Buffer::height = h;
+
+    settings.width = w;
+    settings.height = h;
 }
 
 void DrawManager::draw_scene_no_lights()
@@ -80,10 +87,6 @@ void DrawManager::draw_scene_no_lights()
             int b = (color & 0x0000FF00) >> 8;
             int a = color & 0x000000FF;
 
-            // r /= (Buffer::depth_buffer[y][x] + 2.5f);
-            // g /= (Buffer::depth_buffer[y][x] + 2.5f);
-            // b /= (Buffer::depth_buffer[y][x] + 2.5f);
-
             Graphics::SDLCanvas::set_color(r, g, b, a);
             Graphics::SDLCanvas::set_pixel(x, y);
         }
@@ -93,16 +96,61 @@ void DrawManager::draw_scene_no_lights()
     return;
 }
 
+
+void DrawManager::new_draw_scene()
+{
+    if (DrawManager::do_we_draw)
+    {
+        std::cout << "Drawing! New drawing!!!" << std::endl;
+        std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
+
+        auto objects = ControlSystem::SceneManager::get_drawable_objects();
+        auto lights = ControlSystem::SceneManager::get_lights();
+        Buffer::frame_buffer = Buffer::original_frame_buffer;
+        Buffer::depth_buffer = Buffer::original_buffer;
+
+        for (auto& light : lights)
+        {
+            light->clear_shadow_buffer();
+        }
+
+        for (auto& light : lights)
+        {
+            std::shared_ptr<AbstractVisitor> shadower = std::make_shared<ShadowMapper>(light);
+            for (auto &obj : objects)
+            {
+                obj->accept(shadower);
+            }
+        }
+
+        std::shared_ptr<AbstractVisitor> visitor = std::make_shared<ZBufMapper>(camera);
+        for (auto &obj : objects)
+        {
+            obj->accept(visitor);
+        }
+
+        DrawManager::do_we_draw = false;
+    }
+    //apply frame_buffer to screen
+    for (int y = 0; y < Buffer::height; ++y)
+    {
+        for (int x = 0; x < Buffer::width; ++x)
+        {
+            //getting ARGB8888 color
+            uint32_t color = Buffer::frame_buffer[y][x];
+            int r = (color & 0xFF000000) >> 24;
+            int g = (color & 0x00FF0000) >> 16;
+            int b = (color & 0x0000FF00) >> 8;
+            int a = color & 0x000000FF;
+
+            Graphics::SDLCanvas::set_color(r, g, b, a);
+            Graphics::SDLCanvas::set_pixel(x, y);
+        }
+    }
+}
+
 void DrawManager::draw_scene()
 {
-
-    //Алгоритм, ответственный за отрисовку трехмерной графики (Решение задачи построения реалистического изображения)
-    //Привет курову!
-
-    //Щас будет демонстрация артефактов
-    //Щас буду передвигать камеру в то же направление, что и свет, чтобы показать, что видит свет
-    //(картинка при этом будет улучшаться)
-    //Примеры того, как это можно чинить
     if (DrawManager::do_we_draw)
     {
         std::cout << "Drawing!" << std::endl;

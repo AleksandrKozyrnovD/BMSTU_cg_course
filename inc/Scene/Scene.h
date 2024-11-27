@@ -4,6 +4,7 @@
 #include "AbstractObject.h"
 #include "Camera.h"
 #include "Light.h"
+#include "ModelType/Facet.h"
 // #include "SceneManager.h"
 
 #include <list>
@@ -56,10 +57,21 @@ public:
     iteratorCamera beginCamera();
     iteratorCamera endCamera();
 
+    void set_camerav2(const std::shared_ptr<CameraV2>& cam);
+    std::shared_ptr<CameraV2>& get_camerav2();
+
+    void set_lightv2(const std::shared_ptr<LightV2>& light);
+    std::shared_ptr<LightV2>& get_lightv2();
+
+    std::list<Facet> get_facets();
+
 protected:
     std::list<std::shared_ptr<AbstractObject>> objects;
     std::list<iterator> cameras;
     std::vector<std::shared_ptr<Light>> light_list;
+
+    std::shared_ptr<CameraV2> cam2;
+    std::shared_ptr<LightV2> light2;
 };
 
 #include "Scene.hpp"

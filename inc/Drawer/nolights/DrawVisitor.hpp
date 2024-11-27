@@ -47,9 +47,6 @@ void DrawVisitor::process_facet(const Facet& facet)
 
     glm::mat4 proj = projection * view;
 
-    glm::vec3 test1 = glm::vec3(0.0f, 0.0f, 5.0f);
-    glm::vec3 test2 = glm::vec3(0.0f, 0.0f, -1.0f);
-
     //project
     p0 = glm::vec3(glm::project(p0, model, proj, viewport));
     p1 = glm::vec3(glm::project(p1, model, proj, viewport));
@@ -85,6 +82,22 @@ void DrawVisitor::process_facet(const Facet& facet)
     {
         return;
     }
+
+    std::cout << "======================" << std::endl;
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            std::cout << model[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "x1: " << p0.x << " x2: " << p1.x << " x3: " << p2.x << std::endl;
+    std::cout << "y1: " << p0.y << " y2: " << p1.y << " y3: " << p2.y << std::endl;
+    std::cout << "z1: " << p0.z << " z2: " << p1.z << " z3: " << p2.z << std::endl;
+    std::cout << "======================" << std::endl;
 
     // Determine whether the short side is on the left or on the right.
     //In general there are 2 classes of triangles: by which side bend is
@@ -172,12 +185,15 @@ void DrawVisitor::process_scanline(float y, GLMSlope& A, GLMSlope& B)
 
 void DrawVisitor::visit(Model& obj)
 {
-    this->transform = obj.transform;
+    glm::mat4 back = this->transform;
+    // this->transform = obj.transform * this->transform;
+    this->transform *= obj.transform;
     for (const Facet& facet : obj.model->get_surfaces())
     {
         this->color = facet.color;
         this->process_facet(facet);
     }
+    this->transform = back;
 }
 
 
@@ -189,7 +205,14 @@ void DrawVisitor::visit(Camera& obj)
 
 void DrawVisitor::visit(CompositeObject& obj)
 {
-    obj.accept(std::make_shared<DrawVisitor>(*this));
+    glm::mat4x4 back = this->transform;
+    // this->transform = obj.transform * this->transform;
+    this->transform *= obj.transform;
+    for (auto& element : obj)
+    {
+        element->accept(std::make_shared<DrawVisitor>(*this));
+    }
+    this->transform = back;
 }
 
 void DrawVisitor::visit(Light& obj)

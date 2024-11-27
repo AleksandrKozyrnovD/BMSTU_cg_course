@@ -21,9 +21,9 @@ public:
     const glm::vec3& operator*() const;
 
     void change_direction();
+    glm::vec3 A, B, C;
 
 protected:
-    glm::vec3 A, B, C;
     glm::vec3 normal;
 };
 

@@ -3,6 +3,7 @@
 #include "Builders/SurfaceBuilder.h"
 #include "LoadManager.h"
 #include "Scene.h"
+#include "CompositeObject.h"
 
 #include <fstream>
 #include <ios>
@@ -78,13 +79,14 @@ std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::st
     
     std::shared_ptr<CompositeObject> composite = std::make_shared<CompositeObject>();
     //readline
-    std::string line;
+    std::string line = "1";
     float dx, dy, dz,
           rx, ry, rz,
           sx, sy, sz;
     char objfile[512];
     int type;
-    while (std::getline(file, line))
+    std::getline(file, line);
+    while (line != "")
     {
         //parse
         //Format: file type dx dy dz rx ry rz sx sy sz
@@ -117,9 +119,15 @@ std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::st
                 break;
             case 1:
                 obj = LoadManager::load_from_file<SurfaceBuilder>(objfile);
-                ControlSystem::TransformManager::move(obj, dx, dy, dz);
-                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                // std::cout << "Loading. Paramets:" << std::endl;
+                // std::cout << "Line: " << line << std::endl;
+                // printf("%s\n", line.c_str());
+                // std::cout << "dx: " << dx << " " << dy << " " << dz << std::endl;
+                // std::cout << "rx: " << rx << " " << ry << " " << rz << std::endl;
+                // std::cout << "sx: " << sx << " " << sy << " " << sz << std::endl;
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
+                ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
+                ControlSystem::TransformManager::move(obj, dx, dy, dz);
                 composite->add(obj);
                 break;
             case 2:
@@ -138,6 +146,7 @@ std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::st
                 composite->add(obj);
                 break;
         }
+        std::getline(file, line);
     }
     file.close();
 
@@ -164,7 +173,8 @@ void LoadManager::load_scene(const std::string& filename)
           sx, sy, sz;
     char objfile[512];
     int type;
-    while (std::getline(file, line))
+    std::getline(file, line);
+    while (line != "")
     {
         //parse
         //Format: file type dx dy dz rx ry rz sx sy sz
@@ -222,6 +232,8 @@ void LoadManager::load_scene(const std::string& filename)
                 ControlSystem::SceneManager::add_object(obj);
                 break;
         }
+        std::getline(file, line);
     }
     file.close();
 }
+
