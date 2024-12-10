@@ -6,7 +6,7 @@ project(Cursovaya)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(CMAKE_CXX_COMPILER clang++)
+# set(CMAKE_CXX_COMPILER g++)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/)
 
@@ -30,6 +30,8 @@ set(LIB_DIR "${PROJECT_SOURCE_DIR}/dependencies")
 
 # --- START PROJECT ---
 
+# add_subdirectory("${LIB_DIR}/imguidialog")
+
 
 file(GLOB source CONFIGURE_DEPENDS 
                 "${SRC_DIR}/*.cpp"
@@ -37,12 +39,13 @@ file(GLOB source CONFIGURE_DEPENDS
 )
 
 
-
 add_executable(${PROJECT_NAME} ${source})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${LIB_DIR}")
 target_include_directories(${PROJECT_NAME} PUBLIC "${LIB_DIR}/glm")
 target_include_directories(${PROJECT_NAME} PUBLIC "${LIB_DIR}/imgui/inc")
+target_include_directories(${PROJECT_NAME} PUBLIC "${LIB_DIR}/filedialog/")
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}")
 target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/BasicGraphic")
@@ -68,6 +71,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${INC_DIR}/Drawer/nolights")
 
 find_package(SDL2 REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2::SDL2)
+
+# target_link_directories(${PROJECT_NAME} PRIVATE ${LIB_DIR}/imguidialog)
 
 # set(DEPS_DIR "${PROJECT_SOURCE_DIR}/dependencies")
 

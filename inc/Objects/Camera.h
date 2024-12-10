@@ -2,9 +2,9 @@
 #define __CAMERA_H__
 
 #include "Drawable.h"
-// #include "Point.h"
 
-#include "glm/mat4x4.hpp"
+
+#include "glm/trigonometric.hpp"
 
 #include <iostream>
 
@@ -28,15 +28,30 @@ public:
 
     glm::mat4x4 get_perspective_matrix() const;
 
+    void update_vectors()
+    {
+        glm::vec3 front;
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        this->forward = glm::normalize(front);
+        this->right = glm::normalize(glm::cross(this->forward, Camera::worldup));
+        this->up = glm::normalize(glm::cross(this->right, this->forward));
+    }
+
 public:
     glm::vec3 up;
     glm::vec3 forward;
     glm::vec3 right;
 
-    float fov = 90;
+    static glm::vec3 worldup;
+
+    float yaw = 0, pitch = 0;
+
+    float fov = 75;
 };
 
-
+glm::vec3 Camera::worldup = glm::vec3(0.0f, 1.0f, 0.0f);
 
 class CameraV2 : public Camera
 {

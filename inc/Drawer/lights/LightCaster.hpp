@@ -1,7 +1,8 @@
 #include "LightCaster.h"
 
 
-#include "Buffer.inl"
+// #include "Buffer.inl"
+#include "DrawManager.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "Model.h"
 #include "CompositeObject.h"
@@ -26,7 +27,7 @@ void LightCaster::process_facet(const Facet& facet)
     glm::mat4x4 projection = this->light_source->get_perspective_matrix();
     glm::mat4x4 view = this->light_source->get_view_matrix();
     // glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::width, ControlSystem::Buffer::height);
-    glm::vec4 viewport(0.0f, 0.0f, Buffer::shadow_res, Buffer::shadow_res);
+    glm::vec4 viewport(0.0f, 0.0f, ControlSystem::Buffer::shadow_res, ControlSystem::Buffer::shadow_res);
 
     //back face culling. Normal is in local coordinates
     glm::vec3 normal = glm::normalize(this->transform * glm::vec4(facet.normal, 0.0f)); //in world coordinates

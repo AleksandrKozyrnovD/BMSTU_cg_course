@@ -2,6 +2,7 @@
 #include "DrawManager.h"
 #include "InteractionManager.h"
 #include "SceneManager.h"
+#include "TransformManager.h"
 
 using namespace ControlSystem;
 

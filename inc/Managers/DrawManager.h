@@ -31,7 +31,6 @@ namespace ControlSystem
     };
 }
 
-#include "Buffer.inl"
 #include "DrawManager.hpp"
 
 

@@ -2,15 +2,17 @@
 #include "AbstractVisitor.h"
 #include "Builders/SurfaceBuilder.h"
 #include "LoadManager.h"
-#include "Scene.h"
+#include "TransformManager.h"
 #include "CompositeObject.h"
 
 #include <fstream>
 #include <ios>
 #include <iostream>
-#include <istream>
 #include <memory>
 #include <stdio.h>
+
+// #include "SceneManager.h"
+
 
 using namespace ControlSystem;
 
@@ -78,6 +80,8 @@ std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::st
         return nullptr;
     
     std::shared_ptr<CompositeObject> composite = std::make_shared<CompositeObject>();
+    composite->load_file = filename;
+
     //readline
     std::string line = "1";
     float dx, dy, dz,
@@ -119,12 +123,7 @@ std::shared_ptr<AbstractObject> LoadManager::load_composite_object(const std::st
                 break;
             case 1:
                 obj = LoadManager::load_from_file<SurfaceBuilder>(objfile);
-                // std::cout << "Loading. Paramets:" << std::endl;
-                // std::cout << "Line: " << line << std::endl;
-                // printf("%s\n", line.c_str());
-                // std::cout << "dx: " << dx << " " << dy << " " << dz << std::endl;
-                // std::cout << "rx: " << rx << " " << ry << " " << rz << std::endl;
-                // std::cout << "sx: " << sx << " " << sy << " " << sz << std::endl;
+                obj->load_file = objfile;
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
                 ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
                 ControlSystem::TransformManager::move(obj, dx, dy, dz);
@@ -211,6 +210,7 @@ void LoadManager::load_scene(const std::string& filename)
                 break;
             case 1:
                 obj = LoadManager::load_from_file<SurfaceBuilder>(objfile);
+                obj->load_file = objfile;
                 ControlSystem::TransformManager::move(obj, dx, dy, dz);
                 ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
@@ -226,14 +226,22 @@ void LoadManager::load_scene(const std::string& filename)
                 break;
             case 3:
                 obj = LoadManager::load_composite_object(objfile);
+                // obj->load_file = objfile;
                 ControlSystem::TransformManager::move(obj, dx, dy, dz);
                 ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
                 ControlSystem::SceneManager::add_object(obj);
                 break;
+            case 4:
+                Map map(dx);
+                ControlSystem::SceneManager::set_map(map);
+                ControlSystem::SceneManager::fill_map();
+                break;
         }
         std::getline(file, line);
     }
     file.close();
+
+    SceneManager::load_file = filename;
 }
 

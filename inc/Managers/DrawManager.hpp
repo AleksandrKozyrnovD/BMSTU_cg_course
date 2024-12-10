@@ -1,24 +1,20 @@
-#include "AbstractVisitor.h"
-#include "Application.h"
-#include "Buffer.inl"
 #include "Canvas.h"
-#include "DrawManager.h"
-#include "SceneManager.h"
-
-#include "DrawVisitor.h"
-#include "ZMapper.h"
-#include "LightCaster.h"
-#include "glm/ext/matrix_projection.hpp"
-#include "glm/matrix.hpp"
-#include "normalzbuffer/NewDrawVisitor.h"
 #include <memory>
 
+#include "SceneManager.h"
+// #include "ZMapper.h"
+#include "normalzbuffer/NewDrawVisitor.h"
+// #include "LightCaster.h"
+
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/matrix_projection.hpp"
 
 using namespace ControlSystem;
 
 int Buffer::width = 1940;
 int Buffer::height = 1200;
-int Buffer::shadow_res = 1200;
+int Buffer::shadow_res = 1500;
 
 bool DrawManager::do_we_draw = true;
 
@@ -33,8 +29,6 @@ std::vector<std::vector<uint32_t>> Buffer::original_frame_buffer
 std::vector<std::vector<float>> Buffer::depth_buffer = original_buffer;
 std::vector<std::vector<uint32_t>> Buffer::frame_buffer = original_frame_buffer;
 
-//здесь увеличить разрешение теней, чтобы, например, было 2 к 1 отношение разрешения экрана к тени
-//(сейчас у меня разрешение тени = разрешение экрана, но это я чуть позже исправлю)
 std::vector<std::vector<float>> Buffer::original_light_depth
 = std::vector<std::vector<float>>(Buffer::shadow_res, std::vector<float>(Buffer::shadow_res, 1.0f));
 
@@ -58,39 +52,39 @@ void DrawManager::set_window_size(int w, int h, Window::Settings& settings)
 
 void DrawManager::draw_scene_no_lights()
 {
-    if (DrawManager::do_we_draw)
-    {
-        std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
+    // if (DrawManager::do_we_draw)
+    // {
+    //     std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
-        auto objects = ControlSystem::SceneManager::get_drawable_objects();
-        std::shared_ptr<AbstractVisitor> visitor = std::make_shared<DrawVisitor>(camera);
+    //     auto objects = ControlSystem::SceneManager::get_drawable_objects();
+    //     std::shared_ptr<AbstractVisitor> visitor = std::make_shared<DrawVisitor>(camera);
 
-        Buffer::frame_buffer = Buffer::original_frame_buffer;
-        Buffer::depth_buffer = Buffer::original_buffer;
+    //     Buffer::frame_buffer = Buffer::original_frame_buffer;
+    //     Buffer::depth_buffer = Buffer::original_buffer;
 
-        for (auto &obj : objects)
-        {
-            obj->accept(visitor);
-        }
-        DrawManager::do_we_draw = false;
-    }
+    //     for (auto &obj : objects)
+    //     {
+    //         obj->accept(visitor);
+    //     }
+    //     DrawManager::do_we_draw = false;
+    // }
 
-    //apply frame_buffer to screen
-    for (int y = 0; y < Buffer::height; ++y)
-    {
-        for (int x = 0; x < Buffer::width; ++x)
-        {
-            //getting ARGB8888 color
-            uint32_t color = Buffer::frame_buffer[y][x];
-            int r = (color & 0xFF000000) >> 24;
-            int g = (color & 0x00FF0000) >> 16;
-            int b = (color & 0x0000FF00) >> 8;
-            int a = color & 0x000000FF;
+    // //apply frame_buffer to screen
+    // for (int y = 0; y < Buffer::height; ++y)
+    // {
+    //     for (int x = 0; x < Buffer::width; ++x)
+    //     {
+    //         //getting ARGB8888 color
+    //         uint32_t color = Buffer::frame_buffer[y][x];
+    //         int r = (color & 0xFF000000) >> 24;
+    //         int g = (color & 0x00FF0000) >> 16;
+    //         int b = (color & 0x0000FF00) >> 8;
+    //         int a = color & 0x000000FF;
 
-            Graphics::SDLCanvas::set_color(r, g, b, a);
-            Graphics::SDLCanvas::set_pixel(x, y);
-        }
-    }
+    //         Graphics::SDLCanvas::set_color(r, g, b, a);
+    //         Graphics::SDLCanvas::set_pixel(x, y);
+    //     }
+    // }
 
 
     return;
@@ -147,58 +141,59 @@ void DrawManager::new_draw_scene()
             Graphics::SDLCanvas::set_pixel(x, y);
         }
     }
+    return;
 }
 
 void DrawManager::draw_scene()
 {
-    if (DrawManager::do_we_draw)
-    {
-        std::cout << "Drawing!" << std::endl;
-        std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
+    // if (DrawManager::do_we_draw)
+    // {
+    //     std::cout << "Drawing!" << std::endl;
+    //     std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
-        auto objects = ControlSystem::SceneManager::get_drawable_objects();
-        auto lights = ControlSystem::SceneManager::get_lights();
-        Buffer::frame_buffer = Buffer::original_frame_buffer;
-        Buffer::depth_buffer = Buffer::original_buffer;
+    //     auto objects = ControlSystem::SceneManager::get_drawable_objects();
+    //     auto lights = ControlSystem::SceneManager::get_lights();
+    //     Buffer::frame_buffer = Buffer::original_frame_buffer;
+    //     Buffer::depth_buffer = Buffer::original_buffer;
 
-        //make depth buffer from camera view point
-        std::shared_ptr<AbstractVisitor> depth_visitor = std::make_shared<ZMapper>(camera);
-        for (auto &obj : objects)
-        {
-            obj->accept(depth_visitor);
-        }
+    //     //make depth buffer from camera view point
+    //     std::shared_ptr<AbstractVisitor> depth_visitor = std::make_shared<ZMapper>(camera);
+    //     for (auto &obj : objects)
+    //     {
+    //         obj->accept(depth_visitor);
+    //     }
 
-        //what each light see and then what camera see?
-        //for every light source cast shadow from it
-        for (auto& light : lights)
-        {
-            std::shared_ptr<LightCaster> caster = std::make_shared<LightCaster>(camera, light);
-            for (auto &obj : objects)
-            {
-                ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_light_depth; //reset depth buffer
-                ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_light_frame; //reset frame buffer
-                obj->accept(caster);
-                DrawManager::process_from_viewpoint(light, camera, obj->transform);
-            }
-        }
-        DrawManager::do_we_draw = false;
-    }
-    //apply frame_buffer to screen
-    for (int y = 0; y < Buffer::height; ++y)
-    {
-        for (int x = 0; x < Buffer::width; ++x)
-        {
-            //getting ARGB8888 color
-            uint32_t color = Buffer::frame_buffer[y][x];
-            int r = (color & 0xFF000000) >> 24;
-            int g = (color & 0x00FF0000) >> 16;
-            int b = (color & 0x0000FF00) >> 8;
-            int a = color & 0x000000FF;
+    //     //what each light see and then what camera see?
+    //     //for every light source cast shadow from it
+    //     for (auto& light : lights)
+    //     {
+    //         std::shared_ptr<LightCaster> caster = std::make_shared<LightCaster>(camera, light);
+    //         for (auto &obj : objects)
+    //         {
+    //             ControlSystem::Buffer::light_depth_buffer = ControlSystem::Buffer::original_light_depth; //reset depth buffer
+    //             ControlSystem::Buffer::light_frame_buffer = ControlSystem::Buffer::original_light_frame; //reset frame buffer
+    //             obj->accept(caster);
+    //             DrawManager::process_from_viewpoint(light, camera, obj->transform);
+    //         }
+    //     }
+    //     DrawManager::do_we_draw = false;
+    // }
+    // //apply frame_buffer to screen
+    // for (int y = 0; y < Buffer::height; ++y)
+    // {
+    //     for (int x = 0; x < Buffer::width; ++x)
+    //     {
+    //         //getting ARGB8888 color
+    //         uint32_t color = Buffer::frame_buffer[y][x];
+    //         int r = (color & 0xFF000000) >> 24;
+    //         int g = (color & 0x00FF0000) >> 16;
+    //         int b = (color & 0x0000FF00) >> 8;
+    //         int a = color & 0x000000FF;
 
-            Graphics::SDLCanvas::set_color(r, g, b, a);
-            Graphics::SDLCanvas::set_pixel(x, y);
-        }
-    }
+    //         Graphics::SDLCanvas::set_color(r, g, b, a);
+    //         Graphics::SDLCanvas::set_pixel(x, y);
+    //     }
+    // }
 }
 
 void DrawManager::process_from_viewpoint(std::shared_ptr<Light>& light_source, std::shared_ptr<Camera>& camera, glm::mat4 transform)

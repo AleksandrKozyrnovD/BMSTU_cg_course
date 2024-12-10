@@ -1,13 +1,8 @@
-#include "AbstractObject.h"
-#include "DrawManager.h"
-#include "Facade.h"
+// #include "DrawManager.h"
 #include "ImguiInterface.h"
-#include "LoadManager.h"
-#include "SceneManager.h"
+// #include "LoadManager.h"
+// #include "SceneManager.h"
 #include "imgui.h"
-#include "imgui_internal.h"
-#include <memory>
-#include <string>
 
 ImGuiParams ImguiInterface::param = ImGuiParams();
 
@@ -22,6 +17,9 @@ bool* ImguiInterface::b_overlay = new bool;
 bool *ImguiInterface::b_map_overlay = new bool;
 bool *ImguiInterface::b_show_model_browser = new bool;
 bool *ImguiInterface::b_map_grid = new bool;
+bool *ImguiInterface::b_new_scene_input = new bool;
+bool *ImguiInterface::b_open_scene = new bool;
+bool *ImguiInterface::controls_allowed = new bool;
 
 void ImguiInterface::init_interface()
 {
@@ -31,6 +29,9 @@ void ImguiInterface::init_interface()
     *ImguiInterface::b_map_overlay = false;
     *ImguiInterface::b_show_model_browser = false;
     *ImguiInterface::b_map_grid = false;
+    *ImguiInterface::b_new_scene_input = false;
+    *ImguiInterface::b_open_scene = false;
+    *ImguiInterface::controls_allowed = true;
 }
 
 void ImguiInterface::end_interface()
@@ -41,6 +42,9 @@ void ImguiInterface::end_interface()
     delete ImguiInterface::b_map_overlay;
     delete ImguiInterface::b_show_model_browser;
     delete ImguiInterface::b_map_grid;
+    delete ImguiInterface::b_new_scene_input;
+    delete ImguiInterface::b_open_scene;
+    delete ImguiInterface::controls_allowed;
 }
 
 
@@ -59,6 +63,8 @@ void ImguiInterface::draw_mainwindow()
         if (*b_map_overlay) ImguiInterface::draw_map_overlay();
         if (*b_show_model_browser) show_model_browser();
         if (*b_map_grid)    ImguiInterface::draw_map_grid();
+        if (*b_new_scene_input) show_new_scene_input();
+        if (*b_open_scene) open_scene();
 
         ImGui::EndFrame();
 }
@@ -66,91 +72,49 @@ void ImguiInterface::draw_mainwindow()
 #include "CodeFragments/imgui_drawmenu.hh"
 #include "CodeFragments/imgui_drawoverlay.hh"
 #include "CodeFragments/imgui_drawmapoverlay.hh"
+#include "CodeFragments/imgui_modelbrowser.hh"
+// #include "CodeFragments/imgui_newscene.hh"
+// #include "CodeFragments/imgui_loadscene.hh"
 
-
-#include <filesystem>
-#include <fstream>
-#include <string>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
-void ImguiInterface::show_model_browser()
+void ImguiInterface::open_scene()
 {
     static std::shared_ptr<AbstractObject> obj = nullptr;
-    std::string directoryPath = "/home/aleksandr/Desktop/bmstu/Curse/CGNEW/models";
+    std::string directoryPath = "/home/aleksandr/Desktop/bmstu/Curse/CGNEW/scenes";
     static std::string selectedModel = "No model selected";
-    static std::string descriptionContent = "No description available";
 
-
-    if (ImGui::Begin("Model Browser", ImguiInterface::b_show_model_browser))
+    if (ImGui::Begin("Scene Browser", ImguiInterface::b_open_scene))
     {  // Open window
         ImGui::Columns(2, "modelColumns");  // Create two columns
         
         // Left column for model entries
-        ImGui::Text("Select a .model file:");
+        ImGui::Text("Select a .scene file:");
         ImGui::Separator();
         
         // Scan directory for .model files
         for (const auto& entry : fs::directory_iterator(directoryPath))
         {
-            if (entry.is_regular_file() && entry.path().extension() == ".txt")
+            if (entry.is_regular_file() && entry.path().extension() == ".scene")
             {
                 std::string modelFile = entry.path().filename().string();
                 // std::string modelFile = entry.path().string();
 
                 if (ImGui::Selectable(modelFile.c_str(), selectedModel == modelFile))
                 {
-                    // On selection, set this model as selected
-                    // selectedModel = modelFile;
                     selectedModel = entry.path().string();
-
-                    // Try to open corresponding .descr file
-                    // std::string descrPath = entry.path().replace_extension(".descr").string();
-                    std::string descrPath = entry.path().string();
-                    descrPath = descrPath.substr(0, descrPath.length() - 4) + ".descr";
-                    std::ifstream descrFile(descrPath);
-
-                    if (descrFile.is_open())
-                    {
-                        // Read description content
-                        descriptionContent.assign((std::istreambuf_iterator<char>(descrFile)),
-                                                  std::istreambuf_iterator<char>());
-                        descrFile.close();
-                    }
-                    else
-                    {
-                        descriptionContent = "No description available.";
-                    }
                 }
             }
         }
 
         ImGui::NextColumn();  // Move to the next column
 
-        // Right column for description
-        ImGui::Text("Description:");
-        ImGui::Separator();
-        ImGui::TextWrapped("%s", descriptionContent.c_str());
-
         if (ImGui::Button("Add"))
         {
+            SceneManager::clear_scene();
             std::cout << "Adding <" << selectedModel << "> to the application..." << std::endl;
-            // obj = ControlSystem::LoadManager::load_from_file<SurfaceBuilder>(selectedModel);
-            obj = ControlSystem::LoadManager::load_composite_object(selectedModel);
-            std::cout << "Coordinates: (" << param.xi << ", " << param.yi << ")" << std::endl;
+            ControlSystem::LoadManager::load_scene(selectedModel);
+            ControlSystem::DrawManager::do_we_draw = true;
 
-            if (obj != nullptr)
-            {
-                ControlSystem::TransformManager::move(obj, param.xi * 1.0f, 0.5f, param.yi * 1.0f);
-                ControlSystem::SceneManager::add_object(obj);
-                auto& map = SceneManager::get_map();
-                map.map[param.xi][param.yi].object = obj;
-                map.map[param.xi][param.yi].empty = false;
-                ControlSystem::DrawManager::do_we_draw = true;
-            }
-
-            *ImguiInterface::b_show_model_browser = false;
+            *ImguiInterface::b_open_scene = false;
         }
 
         ImGui::Columns(1);  // Reset columns to 1
@@ -158,141 +122,46 @@ void ImguiInterface::show_model_browser()
     ImGui::End();  // Close the window
 }
 
-
-// Function to show the grid
-void ImguiInterface::draw_map_grid()
+void ImguiInterface::show_new_scene_input()
 {
+    static int input_value = 1;
+    static char stringinput[255] = "inputfilename";
 
-    static bool moveflag = false;
-    auto& map = SceneManager::get_map();
-    float totalGridSize = 450.0f;
-    int gridSize = map.w;
-    float cellSize = totalGridSize / gridSize;
-   // Set ImGui window flags to make it non-resizable
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar;
+    *ImguiInterface::controls_allowed = false;
 
-    // Open the grid window with specified flags
-    ImGui::SetNextWindowSize(ImVec2(totalGridSize * 1.0375f, totalGridSize * 1.0375f), ImGuiCond_Always);  // Set fixed size for the grid window
-    
-    ImGui::Begin("Grid", ImguiInterface::b_map_grid, windowFlags);  // Open the grid window
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+    ImGui::Begin("Enter Integer Value", ImguiInterface::b_new_scene_input, ImGuiWindowFlags_AlwaysAutoResize);
 
-   for (int row = 0; row < gridSize; ++row) {
-        for (int col = 0; col < gridSize; ++col) {
-            // Unique ID for each cell to avoid ImGui conflicts
-            ImGui::PushID(row * gridSize + col);
+    ImGui::Text("Please enter an integer value:");
+    // ImGui::InputInt("##input", &input_value);
+    ImGui::SliderInt("##input", &input_value, 1, 10);
+    ImGui::InputText("##file", stringinput, sizeof(stringinput) - 6);
 
-            // Create a button for each cell
-            if (ImGui::Button("##cell", ImVec2(cellSize, cellSize)))
-            {
-                if (moveflag)
-                {
-                    moveflag = false;
-                    if (map.map[row][col])
-                    {
-                        std::cout << "Object already exists at (" << row << ", " << col << ")" << std::endl;
-                    }
-                    else
-                    {
-                        map.map[row][col].object = map.map[param.xi][param.yi].object;
-                        map.map[row][col].empty = false;
+    ImGui::Separator();
 
-                        map.map[param.xi][param.yi].object = nullptr;
-                        map.map[param.xi][param.yi].empty = true;
-                        
-                        ControlSystem::DrawManager::do_we_draw = true;
-
-                        auto difrow = row - param.xi;
-                        auto difcol = col - param.yi;
-
-                        ControlSystem::TransformManager::move(map.map[row][col].object, difrow * 1.0f, 0.0f, difcol * 1.0f);
-
-                        std::cout << "Object moved from (" << param.xi << ", " << param.yi << ") to (" << row << ", " << col << ")" << std::endl;
-                    }
-                }
-                else
-                {
-                    ImGui::OpenPopup("cell_context_menu");
-                }
-                // Open the context menu on right-click
-            }
-
-            // Unique popup name for each cell
-            // std::string popupName = "cell_context_menu_" + std::to_string(row) + "_" + std::to_string(col);
-
-            // If the context menu is open, show options
-            // if (ImGui::BeginPopup(popupName.c_str()))
-            if (ImGui::BeginPopup("cell_context_menu"))
-            {
-                // Display the coordinates in the context menu
-                ImGui::Text("Cell coordinates: (%d, %d)", row, col);
-                ImGui::Separator();
-
-                // Add menu items here
-                if (ImGui::MenuItem("Add")) {
-                    // Handle Option 1
-                    std::cout << "Option 1 selected at cell (" << row << ", " << col << ")" << std::endl;
-
-                    if (map.map[row][col])
-                    {
-                        std::cout << "Object already exists at (" << row << ", " << col << ")" << std::endl;
-                    }
-                    else
-                    {
-                        ImguiInterface::param.xi = row;
-                        ImguiInterface::param.yi = col;
-
-                        *ImguiInterface::b_show_model_browser = true;
-                        *ImguiInterface::b_map_grid = false;
-                    }
-                }
-                if (ImGui::MenuItem("Delete")) {
-                    // Handle Option 2
-                    std::cout << "Option 2 selected at cell (" << row << ", " << col << ")" << std::endl;
-
-                    if (map.map[row][col])
-                    {
-                        auto id = map.map[row][col].object->get_id();
-                        ControlSystem::SceneManager::remove_object(id);
-                        map.map[row][col].object = nullptr;
-                        map.map[row][col].empty = true;
-                        ControlSystem::DrawManager::do_we_draw = true;
-                    }
-                    else
-                    {
-                        std::cout << "Object does not exist at (" << row << ", " << col << ")" << std::endl;
-                    }
-                    *ImguiInterface::b_map_grid = false;
-                }
-                if (ImGui::MenuItem("Move"))
-                {
-                    std::cout << "Option 3 selected at cell (" << row << ", " << col << ")" << std::endl;
-
-                    if (map.map[row][col])
-                    {
-                        moveflag = true;
-                        ImguiInterface::param.xi = row;
-                        ImguiInterface::param.yi = col;
-                    }
-                    else
-                    {
-                        std::cout << "No object exists at (" << row << ", " << col << ")" << std::endl;
-                        *ImguiInterface::b_map_grid = false;
-                    }
-                }
-
-                ImGui::EndPopup();
-            }
-
-            ImGui::PopID();
-
-            // Move to next cell or new line
-            if (col < gridSize - 1)
-                ImGui::SameLine();
-        }
+    if (ImGui::Button("Accept"))
+    {
+        Map m(input_value);
+        SceneManager::clear_scene();
+        SceneManager::set_map(m);
+        SceneManager::fill_map();
+        *ImguiInterface::b_new_scene_input = false;
+        ControlSystem::DrawManager::do_we_draw = true;
+        *ImguiInterface::controls_allowed = true;
+        std::string loadfile = "scenes/";
+        loadfile += stringinput;
+        loadfile += ".scene";
+        SceneManager::load_file = loadfile;
+        // FILE *file = fopen(cd);
     }
 
-    ImGui::PopStyleVar(2);
+    ImGui::SameLine();
+
+    if (ImGui::Button("Cancel"))
+    {
+        *ImguiInterface::b_new_scene_input = false;
+        *ImguiInterface::controls_allowed = true;
+    }
+
+
     ImGui::End();
 }

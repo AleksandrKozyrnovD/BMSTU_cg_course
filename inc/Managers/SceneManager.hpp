@@ -1,19 +1,18 @@
 // #include "AbstractObject.h"
 #include "Builders/SurfaceBuilder.h"
-#include "Camera.h"
-#include "Light.h"
-#include "LoadManager.h"
-#include "ModelType/Facet.h"
-#include "TransformManager.h"
 #include "SceneManager.h"
 #include <memory>
 
+#include "LoadManager.h"
+#include "TransformManager.h"
 
 using namespace ControlSystem;
 
 
 // std::shared_ptr<Scene> SceneManager::scene = std::shared_ptr<Scene>();
 // std::shared_ptr<Camera> SceneManager::camera = std::shared_ptr<Camera>();
+
+std::string SceneManager::load_file = "";
 
 std::shared_ptr<Scene> ControlSystem::SceneManager::scene = std::shared_ptr<Scene>();
 std::shared_ptr<Camera> ControlSystem::SceneManager::camera = std::shared_ptr<Camera>();
@@ -141,6 +140,7 @@ void SceneManager::clear_scene()
     scene->cameras.clear();
     scene->objects.clear();
     scene->light_list.clear();
+    scene->mapsize = 0;
 }
 
 std::shared_ptr<Camera> SceneManager::get_main_camera()
@@ -211,18 +211,13 @@ void SceneManager::set_map(Map m)
     }
 
     SceneManager::map_of_plots = m;
+    SceneManager::scene->mapsize = m.w;
 }
 
 void SceneManager::fill_map()
 {
     std::shared_ptr<AbstractObject> floor = nullptr;
 
-    std::shared_ptr<Light> light = std::make_shared<Light>(
-        glm::vec3(1.0f, 1.0f, -10.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f),
-        0
-    );
     for (size_t i = 0; i < map_of_plots.w; ++i)
     {
         for (size_t j = 0; j < map_of_plots.h; ++j)
@@ -237,8 +232,27 @@ void SceneManager::fill_map()
             }
         }
     }
-
+    std::shared_ptr<Light> light = std::make_shared<Light>(
+        glm::vec3{ 1.0f * map_of_plots.w / 2 - 0.5f, 1.75f, -(1.0f * map_of_plots.h / 2 + 0.5f) },
+        glm::vec3{ 0.0f, 0.725f, 0.689f },
+        glm::vec3{ 0.0f, -0.689f, 0.725f },
+        0
+    );
     ControlSystem::SceneManager::add_light(light);
+
+    auto camera = SceneManager::get_main_camera();
+    camera->get_center().x = -(1.0f * map_of_plots.w / 2 + 0.5f);
+    camera->get_center().z = 1.0f * map_of_plots.h / 2 - 0.5f;
+    camera->get_center().y = 1.75f;
+
+    // camera->forward = glm::vec3(0.725f, -0.689f, 0.0f);
+    // camera->right = glm::vec3(0.0f, 0.0f, 1.0f);
+    // camera->up = glm::vec3(0.689f, 0.725f, 0.0f);
+
+    camera->yaw = 0;
+    camera->pitch = -30;
+    camera->update_vectors();
+
 }
 
 
@@ -267,3 +281,9 @@ std::list<Facet> SceneManager::get_scene_facets()
 {
     return SceneManager::scene->get_facets();
 }
+
+
+// void SceneManager::save_scene()
+// {
+
+// }

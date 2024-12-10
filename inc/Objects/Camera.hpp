@@ -48,5 +48,5 @@ glm::mat4x4 Camera::get_view_matrix() const
 glm::mat4x4 Camera::get_perspective_matrix() const
 {
     float aspect = float(ControlSystem::Buffer::width) / float(ControlSystem::Buffer::height);
-    return glm::perspective(glm::radians(this->fov), aspect, 0.1f, 10.0f);
+    return glm::perspective(glm::radians(this->fov), aspect, 0.1f, 100.0f);
 }

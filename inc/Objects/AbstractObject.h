@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -39,6 +40,7 @@ public:
     glm::mat4x4 transform = glm::mat4x4(1.0f);
 
     bool show = true;
+    std::string load_file = std::string();
 protected:
     std::size_t id;
     static std::size_t nextid;

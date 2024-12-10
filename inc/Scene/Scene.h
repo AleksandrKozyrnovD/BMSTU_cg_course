@@ -65,6 +65,8 @@ public:
 
     std::list<Facet> get_facets();
 
+    size_t mapsize = 0;
+
 protected:
     std::list<std::shared_ptr<AbstractObject>> objects;
     std::list<iterator> cameras;

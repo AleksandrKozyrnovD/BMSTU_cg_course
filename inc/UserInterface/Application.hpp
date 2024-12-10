@@ -1,13 +1,13 @@
+// #include "SceneManager.h"
 #include "AbstractObject.h"
+#include "imgui.h"
+#include "ImguiInterface.h"
 #include "Application.h"
 #include "Buffer.inl"
 #include "Camera.h"
 #include "Canvas.h"
 #include "DrawManager.h"
-#include "ImguiInterface.h"
 #include "Light.h"
-#include "SceneManager.h"
-#include "imgui.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include "Facade.h"
 
@@ -91,23 +91,21 @@ int Application::Application::run() {
                     ControlSystem::DrawManager::do_we_draw = true;
                     ControlSystem::DrawManager::set_window_size(
                     event.window.data1, event.window.data2, m_window->settings);
-                    std::cout << "Resized" << std::endl;
+                    // std::cout << "Resized" << std::endl;
                 }
             }
-            #include "CodeFragments/InputSDL.hh"
+            if (*ImguiInterface::controls_allowed)
+            {
+                #include "CodeFragments/InputSDL.hh"
+            }
         }
 
         ImguiInterface::draw_interface();
         ImGui::Render();
     
-        // if (ControlSystem::DrawManager::do_we_draw)
-        // {
-            SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
-            SDL_RenderClear(m_window->get_native_renderer());
-        // }
+        SDL_SetRenderDrawColor(m_window->get_native_renderer(),0, 0, 0, 255);
+        SDL_RenderClear(m_window->get_native_renderer());
         //Risovanie zdes
-        // ControlSystem::DrawManager::draw_scene();
-        // ControlSystem::DrawManager::draw_scene_no_lights();
         ControlSystem::DrawManager::new_draw_scene();
 
 

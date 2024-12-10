@@ -11,7 +11,6 @@
 #include "Readers/TXTFacetReader.h"
 #include "Readers/AbstractFacetReader.h"
 
-#include "SceneManager.h"
 #include <memory>
 
 

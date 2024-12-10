@@ -1,14 +1,23 @@
 #ifndef __NEWDRAWVISITOR_H__
 #define __NEWDRAWVISITOR_H__
 
+// #include "SceneManager.h"
 
 #include "AbstractVisitor.h"
+#include "CompositeObject.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Model.h"
 #include "ModelType/Facet.h"
 #include <memory>
+// #include "DrawManager.h"
+// #include "SceneManager.h"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/matrix_projection.hpp"
 
 
+#include <list>
 
 class NewDrawVisitor
 {

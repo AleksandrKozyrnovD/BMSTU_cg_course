@@ -48,6 +48,11 @@ namespace ControlSystem
         static void set_map(Map map);
         static void fill_map();
 
+        static size_t get_map_size()
+        {
+            return SceneManager::scene->mapsize;
+        }
+
 
         static std::shared_ptr<CameraV2>& get_scene_camera();
         static std::shared_ptr<LightV2>& get_scene_light();
@@ -56,6 +61,10 @@ namespace ControlSystem
         static void set_scene_light(const std::shared_ptr<LightV2>& light);
 
         static std::list<Facet> get_scene_facets();
+
+        static std::string load_file;
+
+        // static void save_scene();
 
     protected:
         static std::shared_ptr<Scene> scene;
