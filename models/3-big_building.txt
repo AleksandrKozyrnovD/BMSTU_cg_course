@@ -1,0 +1,17 @@
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 0 -0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0 0 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 0 0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.92 0 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 0.6 -0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0 0.6 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 0.6 0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.92 0.6 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 1.2 -0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0 1.2 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 1.2 0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.92 1.2 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 1.8 -0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0 1.8 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.45 1.8 0.46 0 270 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/glass_row.model 1 0.92 1.8 0 0 0 0 1 1 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 0 0 0 0 0 0 1 1.25 1

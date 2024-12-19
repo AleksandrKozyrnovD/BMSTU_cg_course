@@ -45,6 +45,9 @@ private:
     static void show_model_browser();       static bool *b_show_model_browser;
     static void show_new_scene_input();     static bool *b_new_scene_input;
     static void open_scene();               static bool *b_open_scene;
+
+    static void help();                     static bool *b_help;
+
     
 };
 

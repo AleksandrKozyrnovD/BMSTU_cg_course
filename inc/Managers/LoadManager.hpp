@@ -2,9 +2,11 @@
 #include "AbstractVisitor.h"
 #include "Builders/SurfaceBuilder.h"
 #include "LoadManager.h"
+#include "SceneManager.h"
 #include "TransformManager.h"
 #include "CompositeObject.h"
 
+#include <cmath>
 #include <fstream>
 #include <ios>
 #include <iostream>
@@ -170,6 +172,7 @@ void LoadManager::load_scene(const std::string& filename)
     float dx, dy, dz,
           rx, ry, rz,
           sx, sy, sz;
+    int idx, idz;
     char objfile[512];
     int type;
     std::getline(file, line);
@@ -215,6 +218,14 @@ void LoadManager::load_scene(const std::string& filename)
                 ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
                 SceneManager::add_object(obj);
+                idx = round(dx);
+                idz = round(dz);
+                std::cout << "Filename = " << objfile << std::endl;
+                std::cout << "Setting building at " << dx << " " << dz << std::endl;
+                std::cout << "dx: " << idx << " dy: " << dy << " dz: " << idz << std::endl;
+                std::cout << "rx: " << rx << " ry: " << ry << " rz: " << rz << std::endl;
+                std::cout << "sx: " << sx << " sy: " << sy << " sz: " << sz << std::endl;
+                SceneManager::get_map().set_building(idx, idz, obj);
                 break;
             case 2:
                 light = LoadManager::load_light(objfile);
@@ -225,17 +236,26 @@ void LoadManager::load_scene(const std::string& filename)
                 SceneManager::add_light(light);
                 break;
             case 3:
+                idx = round(dx);
+                idz = round(dz);
+                std::cout << "Filename = " << objfile << std::endl;
+                std::cout << "Setting composite at " << dx << " " << dz << std::endl;
+                std::cout << "dx: " << idx << " dy: " << dy << " dz: " << idz << std::endl;
+                std::cout << "rx: " << rx << " ry: " << ry << " rz: " << rz << std::endl;
+                std::cout << "sx: " << sx << " sy: " << sy << " sz: " << sz << std::endl;
                 obj = LoadManager::load_composite_object(objfile);
                 // obj->load_file = objfile;
-                ControlSystem::TransformManager::move(obj, dx, dy, dz);
+                ControlSystem::TransformManager::move(obj, idx, dy, idz);
                 ControlSystem::TransformManager::rotate(obj, rx, ry, rz);
                 ControlSystem::TransformManager::scale(obj, sx, sy, sz);
                 ControlSystem::SceneManager::add_object(obj);
+                SceneManager::get_map().set_building(idx, idz, obj);
                 break;
             case 4:
                 Map map(dx);
                 ControlSystem::SceneManager::set_map(map);
                 ControlSystem::SceneManager::fill_map();
+                std::cout << "Map loaded" << std::endl;
                 break;
         }
         std::getline(file, line);

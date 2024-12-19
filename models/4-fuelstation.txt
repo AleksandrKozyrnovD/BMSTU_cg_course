@@ -1,0 +1,12 @@
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 0.25 -0.2 0 0 0 0 0.25 0.4 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 -0.25 -0.2 0.2 0 0 0 0.05 0.4 0.05
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 -0.25 -0.2 -0.2 0 0 0 0.05 0.4 0.05
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/dom1.model 1 0 0.4 0 0 0 0 1 0.025 1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/redcube1x1.model 1 -0.25 -0.3 -0.1 0 0 0 0.05 0.4 0.1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/redcube1x1.model 1 -0.25 -0.3 0.1 0 0 0 0.05 0.4 0.1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/redcube1x1.model 1 -0.25 -0.3 0.30 0 0 0 0.05 0.4 0.1
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/redcube1x1.model 1 -0.25 -0.3 -0.30 0 0 0 0.05 0.4 0.1
+
+
+
+

@@ -1,0 +1,65 @@
+\documentclass{bmstu}
+\lstset{%
+	language=cxx,   					% выбор языка для подсветки	
+	basicstyle=\small\sffamily,			% размер и начертание шрифта для подсветки кода
+	numbers=left,						% где поставить нумерацию строк (слева\справа)
+	%numberstyle=,						% размер шрифта для номеров строк
+	stepnumber=1,						% размер шага между двумя номерами строк
+	numbersep=5pt,						% как далеко отстоят номера строк от подсвечиваемого кода
+	frame=single,						% рисовать рамку вокруг кода
+	tabsize=4,							% размер табуляции по умолчанию равен 4 пробелам
+	captionpos=t,						% позиция заголовка вверху [t] или внизу [b]
+	breaklines=true,					
+	breakatwhitespace=true,				% переносить строки только если есть пробел
+	escapeinside={\#*}{*)},				% если нужно добавить комментарии в коде
+	backgroundcolor=\color{white},
+}
+
+\usepackage{pdfpages}
+
+\bibliography{biblio}
+
+\renewcommand{\labelitemi}{\labelitemfont---}
+\renewcommand{\labelitemii}{\labelitemfont---}
+\renewcommand{\labelitemiii}{\labelitemfont---}
+
+\makeatletter
+\renewcommand{\l@section}{\@dottedtocline{1}{0em}{1.8em}}
+\renewcommand{\l@subsection}{\@dottedtocline{2}{0em}{2.3em}}
+\makeatother
+
+
+
+\usepackage{amssymb}
+
+\begin{document}
+
+\makecourseworktitle
+{Информатика и системы управления}
+{Программное обеспечение ЭВМ и информационные технологии}
+{Моделирование сцены улицы из библиотеки объектов}
+{Козырнов~А.~Д./ИУ7-52Б}
+{Мартынюк~Н.~Н.}
+{}
+
+
+\maketableofcontents
+
+
+%\include{01-definitions}
+%\include{02-abbreviations}
+
+\include{03-introduction}
+\include{04-analysis}
+\include{05-design}
+\include{06-implementation}
+\include{07-research}
+\include{08-conclusion}
+
+\makebibliography
+
+\include{09-appendix}
+
+\includepdf[pages=-, fitpaper=true, angle=90]{inc/pdf/presentation.pdf}
+
+\end{document}

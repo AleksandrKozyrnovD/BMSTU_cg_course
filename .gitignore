@@ -4,4 +4,6 @@ build/
 .cache/
 *.exe
 *.o
+python/
+docs/
 imgui.ini

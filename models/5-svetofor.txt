@@ -1,0 +1,6 @@
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/steelcube1x1.model 1 0 -0.3 0 0 0 0 0.05 0.8 0.05
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/steelcube1x1.model 1 -0.05 0 0 0 0 0 0.075 0.2 0.075
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/redcube1x1.model 1 -0.1 0.05 0 0 0 0 0.001 0.05 0.05
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/yellowcube1x1.model 1 -0.1 0 0 0 0 0 0.001 0.05 0.05
+/home/aleksandr/Desktop/bmstu/Curse/CGNEW/model_library/greencube1x1.model 1 -0.1 -0.05 0 0 0 0 0.001 0.05 0.05
+

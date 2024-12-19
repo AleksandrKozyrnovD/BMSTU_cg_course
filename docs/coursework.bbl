@@ -1,0 +1,188 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{prilipenko:2005}{article}{}
+      \name{author}{1}{}{%
+        {{hash=090d622d2ebe1672d9325f8e80d21952}{%
+           family={Прилипенко},
+           familyi={П\bibinitperiod},
+           given={М.\bibnamedelimi А.},
+           giveni={М\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Омский Государственный Технический Университет}%
+      }
+      \strng{namehash}{090d622d2ebe1672d9325f8e80d21952}
+      \strng{fullhash}{090d622d2ebe1672d9325f8e80d21952}
+      \strng{bibnamehash}{090d622d2ebe1672d9325f8e80d21952}
+      \strng{authorbibnamehash}{090d622d2ebe1672d9325f8e80d21952}
+      \strng{authornamehash}{090d622d2ebe1672d9325f8e80d21952}
+      \strng{authorfullhash}{090d622d2ebe1672d9325f8e80d21952}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Математические модели представления компьютерной графикой}
+      \field{year}{2005}
+    \endentry
+    \entry{roberts:1964}{article}{}
+      \name{author}{1}{}{%
+        {{hash=26b437e3241b9688c2e2e85cc9b2e6c1}{%
+           family={Робертс},
+           familyi={Р\bibinitperiod},
+           given={Г.\bibnamedelimi А.},
+           giveni={Г\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {МИТ}%
+      }
+      \strng{namehash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \strng{fullhash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \strng{bibnamehash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \strng{authorbibnamehash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \strng{authornamehash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \strng{authorfullhash}{26b437e3241b9688c2e2e85cc9b2e6c1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Алгоритм Робертса удаления невидимых линий и граней}
+      \field{year}{1964}
+    \endentry
+    \entry{zbuffer:1974}{article}{}
+      \name{author}{1}{}{%
+        {{hash=84c7a3d74d9eb80f9525c71cc7435bd5}{%
+           family={Catmull},
+           familyi={C\bibinitperiod},
+           given={E.\bibnamedelimi E.},
+           giveni={E\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \strng{fullhash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \strng{bibnamehash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \strng{authorbibnamehash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \strng{authornamehash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \strng{authorfullhash}{84c7a3d74d9eb80f9525c71cc7435bd5}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A subdivision algorithm for computer display of curved surfaces}
+      \field{year}{1974}
+    \endentry
+    \entry{guro:1971}{article}{}
+      \name{author}{1}{}{%
+        {{hash=080ab8eb1ab17fed380d379add777ee2}{%
+           family={Gouraud},
+           familyi={G\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{080ab8eb1ab17fed380d379add777ee2}
+      \strng{fullhash}{080ab8eb1ab17fed380d379add777ee2}
+      \strng{bibnamehash}{080ab8eb1ab17fed380d379add777ee2}
+      \strng{authorbibnamehash}{080ab8eb1ab17fed380d379add777ee2}
+      \strng{authornamehash}{080ab8eb1ab17fed380d379add777ee2}
+      \strng{authorfullhash}{080ab8eb1ab17fed380d379add777ee2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Computer display of curved surfaces}
+      \field{year}{1971}
+    \endentry
+    \entry{phong:1998}{article}{}
+      \name{author}{1}{}{%
+        {{hash=c26369f3f8979fa6c28572715c31619d}{%
+           family={Phong},
+           familyi={P\bibinitperiod},
+           given={F.\bibnamedelimi T.},
+           giveni={F\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{c26369f3f8979fa6c28572715c31619d}
+      \strng{fullhash}{c26369f3f8979fa6c28572715c31619d}
+      \strng{bibnamehash}{c26369f3f8979fa6c28572715c31619d}
+      \strng{authorbibnamehash}{c26369f3f8979fa6c28572715c31619d}
+      \strng{authornamehash}{c26369f3f8979fa6c28572715c31619d}
+      \strng{authorfullhash}{c26369f3f8979fa6c28572715c31619d}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Illumination for computer generated pictures}
+      \field{year}{1998}
+    \endentry
+    \entry{cpp}{article}{}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labeltitlesource}{title}
+      \field{title}{Стандарт языка C++, Дата обращения: 24.09.2024}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://isocpp.org/std/the-standard
+      \endverb
+      \verb{url}
+      \verb https://isocpp.org/std/the-standard
+      \endverb
+    \endentry
+    \entry{sdl}{article}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{title}{Документация библиотеки SDL, Дата обращения: 25.09.2024}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://wiki.libsdl.org/SDL3/FrontPage
+      \endverb
+      \verb{url}
+      \verb https://wiki.libsdl.org/SDL3/FrontPage
+      \endverb
+    \endentry
+    \entry{glm}{article}{}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labeltitlesource}{title}
+      \field{title}{Документация к OpenGL Mathematics (GLM), Дата обращения: 25.09.2024}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb http://glm.g-truc.net/glm.pdf
+      \endverb
+      \verb{url}
+      \verb http://glm.g-truc.net/glm.pdf
+      \endverb
+    \endentry
+    \entry{imgui}{article}{}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labeltitlesource}{title}
+      \field{title}{Мануал библиотеки ImGui, Дата обращения: 25.09.2024}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+      \endverb
+      \verb{url}
+      \verb https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

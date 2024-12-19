@@ -20,18 +20,20 @@ bool *ImguiInterface::b_map_grid = new bool;
 bool *ImguiInterface::b_new_scene_input = new bool;
 bool *ImguiInterface::b_open_scene = new bool;
 bool *ImguiInterface::controls_allowed = new bool;
+bool *ImguiInterface::b_help = new bool;
 
 void ImguiInterface::init_interface()
 {
     *ImguiInterface::b_mainwindow = true;
     *ImguiInterface::b_main_menu = true;
-    *ImguiInterface::b_overlay = true;
+    *ImguiInterface::b_overlay = false;
     *ImguiInterface::b_map_overlay = false;
     *ImguiInterface::b_show_model_browser = false;
     *ImguiInterface::b_map_grid = false;
     *ImguiInterface::b_new_scene_input = false;
     *ImguiInterface::b_open_scene = false;
     *ImguiInterface::controls_allowed = true;
+    *ImguiInterface::b_help = false;
 }
 
 void ImguiInterface::end_interface()
@@ -45,6 +47,7 @@ void ImguiInterface::end_interface()
     delete ImguiInterface::b_new_scene_input;
     delete ImguiInterface::b_open_scene;
     delete ImguiInterface::controls_allowed;
+    delete ImguiInterface::b_help;
 }
 
 
@@ -55,7 +58,7 @@ void ImguiInterface::draw_mainwindow()
         ImGui::NewFrame();
 
         /* Tutorial */
-        ImGui::ShowDemoWindow(b_mainwindow);
+        // ImGui::ShowDemoWindow(b_mainwindow);
 
         /* Interface is here */
         if (*b_main_menu)   ImguiInterface::draw_menu();
@@ -65,6 +68,7 @@ void ImguiInterface::draw_mainwindow()
         if (*b_map_grid)    ImguiInterface::draw_map_grid();
         if (*b_new_scene_input) show_new_scene_input();
         if (*b_open_scene) open_scene();
+        if (*b_help)        help();
 
         ImGui::EndFrame();
 }
@@ -107,7 +111,7 @@ void ImguiInterface::open_scene()
 
         ImGui::NextColumn();  // Move to the next column
 
-        if (ImGui::Button("Add"))
+        if (ImGui::Button("Load"))
         {
             SceneManager::clear_scene();
             std::cout << "Adding <" << selectedModel << "> to the application..." << std::endl;
@@ -131,7 +135,7 @@ void ImguiInterface::show_new_scene_input()
 
     ImGui::Begin("Enter Integer Value", ImguiInterface::b_new_scene_input, ImGuiWindowFlags_AlwaysAutoResize);
 
-    ImGui::Text("Please enter an integer value:");
+    ImGui::Text("Please enter a size of a plot (NxN) and a scene name (without extension)");
     // ImGui::InputInt("##input", &input_value);
     ImGui::SliderInt("##input", &input_value, 1, 10);
     ImGui::InputText("##file", stringinput, sizeof(stringinput) - 6);
@@ -163,5 +167,14 @@ void ImguiInterface::show_new_scene_input()
     }
 
 
+    ImGui::End();
+}
+
+
+void ImguiInterface::help()
+{
+    ImGui::Begin("Help", ImguiInterface::b_help);
+    ImGui::Text("For movement use WASD keys. For camera rotation use arrow keys.");
+    ImGui::Text("Movement do not account for camera direction.");
     ImGui::End();
 }

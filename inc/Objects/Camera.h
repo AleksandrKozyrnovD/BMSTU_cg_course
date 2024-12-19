@@ -48,7 +48,7 @@ public:
 
     float yaw = 0, pitch = 0;
 
-    float fov = 75;
+    float fov = 60;
 };
 
 glm::vec3 Camera::worldup = glm::vec3(0.0f, 1.0f, 0.0f);

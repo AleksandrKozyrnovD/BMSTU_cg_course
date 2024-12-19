@@ -5,7 +5,9 @@
 #include "ImguiInterface.h"
 #include "LoadManager.h"
 #include "SceneManager.h"
+#include "glm/trigonometric.hpp"
 #include "imgui.h"
+#include <cmath>
 
 
 
@@ -52,6 +54,7 @@ void ImguiInterface::draw_menu()
                 static float dx, dy, dz;
                 static float rx, ry, rz;
                 static float sx, sy, sz;
+                static int idx, idy, idz;
                 
 
                 static FILE *file = fopen(SceneManager::load_file.c_str(), "w");
@@ -71,6 +74,10 @@ void ImguiInterface::draw_menu()
                         ControlSystem::Facade::execute(&scale);
                         if (obj->IsComposite())
                         {
+                            idx = round(dx);
+                            idy = round(dy);
+                            idz = round(dz);
+                            std::cout << "Test: " << asin(ry) << std::endl;
                             fprintf(file,"%s %d %f %f %f %f %f %f %f %f %f\n",
                                 obj->load_file.c_str(), 3,
                                 dx, dy, dz,
@@ -79,6 +86,9 @@ void ImguiInterface::draw_menu()
                         }
                         else
                         {
+                            idx = round(dx);
+                            idy = round(dy);
+                            idz = round(dz);
                             fprintf(file,"%s %d %f %f %f %f %f %f %f %f %f\n",
                                 obj->load_file.c_str(), 1,
                                 dx, dy, dz,
@@ -108,50 +118,68 @@ void ImguiInterface::draw_menu()
                 // *ImguiInterface::b_show_model_browser = true;
                 *ImguiInterface::b_map_grid = true;
             }
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Debug List"))
-        {
-            static int selected_list = -1;
-            auto objects = ControlSystem::SceneManager::get_drawable_objects();
-            auto lights = ControlSystem::SceneManager::get_lights();
-            auto cameras = ControlSystem::SceneManager::get_cameras();
-            for (int n = 0; n < objects.size(); n++)
+            if (ImGui::MenuItem("Move light to camera"))
             {
-                if (!objects[n]->show)
+                auto& lights = SceneManager::get_lights();
+                auto camera = SceneManager::get_main_camera();
+                for (auto& light : lights)
                 {
-                    continue;
+                    light->get_center() = camera->get_center();
+                    light->up = camera->up;
+                    light->forward = camera->forward;
+                    light->right = camera->right;
                 }
-                size_t id = objects[n]->get_id();
-                std::string name = "Object id: " + std::to_string(id);
-                if (ImGui::Selectable(name.c_str(), selected_list == n))
-                    selected_list = n;
-
-                #include "CodeFragments/imgui_list_interaction_popup.hh"
+                DrawManager::do_we_draw = true;
             }
-            ImGui::Separator();
-            for (int n = 0; n < lights.size(); n++)
-            {
-                size_t id = lights[n]->get_id();
-                std::string name = "Light id: " + std::to_string(id);
-                if (ImGui::Selectable(name.c_str(), selected_list == n))
-                    selected_list = n;
-
-                #include "CodeFragments/imgui_list_interaction_popup.hh"
-            }
-            ImGui::Separator();
-            for (int n = 0; n < cameras.size(); n++)
-            {
-                size_t id = cameras[n]->get_id();
-                std::string name = "Camera id: " + std::to_string(id);
-                if (ImGui::Selectable(name.c_str(), selected_list == n))
-                    selected_list = n;
-
-                #include "CodeFragments/imgui_list_interaction_popup.hh"
-            }
-
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Help"))
+        {
+            *ImguiInterface::b_help = true;
+            ImGui::EndMenu();
+        }
+        // if (ImGui::BeginMenu("Debug List"))
+        // {
+        //     static int selected_list = -1;
+        //     auto objects = ControlSystem::SceneManager::get_drawable_objects();
+        //     auto lights = ControlSystem::SceneManager::get_lights();
+        //     auto cameras = ControlSystem::SceneManager::get_cameras();
+        //     for (int n = 0; n < objects.size(); n++)
+        //     {
+        //         if (!objects[n]->show)
+        //         {
+        //             continue;
+        //         }
+        //         size_t id = objects[n]->get_id();
+        //         std::string name = "Object id: " + std::to_string(id);
+        //         if (ImGui::Selectable(name.c_str(), selected_list == n))
+        //             selected_list = n;
+
+        //         #include "CodeFragments/imgui_list_interaction_popup.hh"
+        //     }
+        //     ImGui::Separator();
+        //     for (int n = 0; n < lights.size(); n++)
+        //     {
+        //         size_t id = lights[n]->get_id();
+        //         std::string name = "Light id: " + std::to_string(id);
+        //         if (ImGui::Selectable(name.c_str(), selected_list == n))
+        //             selected_list = n;
+
+        //         #include "CodeFragments/imgui_list_interaction_popup.hh"
+        //     }
+        //     ImGui::Separator();
+        //     for (int n = 0; n < cameras.size(); n++)
+        //     {
+        //         size_t id = cameras[n]->get_id();
+        //         std::string name = "Camera id: " + std::to_string(id);
+        //         if (ImGui::Selectable(name.c_str(), selected_list == n))
+        //             selected_list = n;
+
+        //         #include "CodeFragments/imgui_list_interaction_popup.hh"
+        //     }
+
+        //     ImGui::EndMenu();
+        // }
         // if (ImGui::BeginMenu("View"))
         // {
         //     if (ImGui::MenuItem("Add Camera"))

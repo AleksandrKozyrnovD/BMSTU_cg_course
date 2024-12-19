@@ -1,3 +1,6 @@
+#include "DrawManager.h"
+#include "Facade.h"
+#include "imgui.h"
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -99,19 +102,31 @@ void ImguiInterface::draw_map_grid()
     int gridSize = map.w;
     float cellSize = totalGridSize / gridSize;
    // Set ImGui window flags to make it non-resizable
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar
+    | ImGuiWindowFlags_AlwaysAutoResize;
 
     // Open the grid window with specified flags
-    ImGui::SetNextWindowSize(ImVec2(totalGridSize * 1.0375f, totalGridSize * 1.0375f), ImGuiCond_Always);  // Set fixed size for the grid window
+    // ImGui::SetNextWindowSize(ImVec2(totalGridSize * 1.0375f, totalGridSize * 1.0375f), ImGuiCond_Always);  // Set fixed size for the grid window
     
     ImGui::Begin("Grid", ImguiInterface::b_map_grid, windowFlags);  // Open the grid window
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3, 3));
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 
-   for (int row = 0; row < gridSize; ++row) {
-        for (int col = 0; col < gridSize; ++col) {
+   for (int row = 0; row < gridSize; ++row)
+   {
+        for (int col = 0; col < gridSize; ++col)
+        {
             // Unique ID for each cell to avoid ImGui conflicts
             ImGui::PushID(row * gridSize + col);
+
+            if (map.map[row][col])
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0,0,255,255));
+            }
+            else
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(0,255,0,255));
+            }
 
             // Create a button for each cell
             if (ImGui::Button("##cell", ImVec2(cellSize, cellSize)))
@@ -211,10 +226,31 @@ void ImguiInterface::draw_map_grid()
                         *ImguiInterface::b_map_grid = false;
                     }
                 }
+                if (ImGui::MenuItem("Rotate clockwise"))
+                {
+                    std::cout << "Option 4 selected at cell (" << row << ", " << col << ")" << std::endl;
 
+                    if (map.map[row][col])
+                    {
+                        auto& obj = map.map[row][col].object;
+                        ControlSystem::TransformManager::rotate(obj, 0.0f, -90.0f, 0.0f);
+                        DrawManager::do_we_draw = true;
+                    }
+                }
+                if (ImGui::MenuItem("Rotate anticlockwise"))
+                {
+                    std::cout << "Option 5 selected at cell (" << row << ", " << col << ")" << std::endl;
+
+                    if (map.map[row][col])
+                    {
+                        auto& obj = map.map[row][col].object;
+                        ControlSystem::TransformManager::rotate(obj, 0.0f, 90.0f, 0.0f);
+                        DrawManager::do_we_draw = true;
+                    }
+                }
                 ImGui::EndPopup();
             }
-
+            ImGui::PopStyleColor();
             ImGui::PopID();
 
             // Move to next cell or new line

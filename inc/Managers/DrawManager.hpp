@@ -90,12 +90,39 @@ void DrawManager::draw_scene_no_lights()
     return;
 }
 
+#include <chrono>
 
 void DrawManager::new_draw_scene()
 {
+    /*
+    seconds with light
+    12 0.4
+    24 1.65
+    36 1.85
+    48 1.7
+    60 1.76
+    72 1.91
+    84 2.13
+    96 2.34
+    108 2.41
+    120 2.55
+    */
+    /*
+    seconds without light
+    12 0.14
+    24 0.41
+    36 0.0.42
+    48 0.46
+    60 0.39
+    72 0.48
+    84 0.5
+    96 0.54
+    108 0.48
+    120 0.57
+    */
     if (DrawManager::do_we_draw)
     {
-        std::cout << "Drawing! New drawing!!!" << std::endl;
+        // auto start = std::chrono::system_clock::now();
         std::shared_ptr<Camera> camera = ControlSystem::SceneManager::get_main_camera();
 
         auto objects = ControlSystem::SceneManager::get_drawable_objects();
@@ -123,6 +150,10 @@ void DrawManager::new_draw_scene()
             obj->accept(visitor);
         }
 
+        // auto end = std::chrono::system_clock::now();
+        // std::chrono::duration<float> duration = end - start;
+        // std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+        // std::cout << "Time rendering: " << ms.count() << std::endl;
         DrawManager::do_we_draw = false;
     }
     //apply frame_buffer to screen
@@ -141,6 +172,7 @@ void DrawManager::new_draw_scene()
             Graphics::SDLCanvas::set_pixel(x, y);
         }
     }
+
     return;
 }
 

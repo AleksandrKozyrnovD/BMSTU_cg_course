@@ -6,7 +6,7 @@
 Light::Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forward, const uint32_t& color)
     : Camera(center, up, forward), color(color)
 {
-    this->fov = 60;
+    this->fov = 85;
 
 
     for (int i = 0; i < ControlSystem::Buffer::shadow_res; ++i)
@@ -18,7 +18,7 @@ Light::Light(const glm::vec3& center, const glm::vec3& up, const glm::vec3& forw
 Light::Light(const Camera& camera, const uint32_t& color)
     : Camera(camera), color(color)
 {
-    this->fov = 60;
+    this->fov = 85;
     for (int i = 0; i < ControlSystem::Buffer::shadow_res; ++i)
     {
         this->shadow_buffer.push_back(std::vector<double>(ControlSystem::Buffer::shadow_res, 0.0f));

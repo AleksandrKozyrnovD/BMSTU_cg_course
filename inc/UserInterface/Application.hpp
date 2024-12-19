@@ -71,7 +71,7 @@ int Application::Application::run() {
     // ControlSystem::DrawManager::set_window_size(Buffer::width, Buffer::height);
     ControlSystem::DrawManager::set_window_size(this->m_window->settings.width, this->m_window->settings.height, this->m_window->settings);
 
-    Map map(3);
+    Map map(0);
     ControlSystem::SceneManager::set_map(map);
     ControlSystem::SceneManager::fill_map();
     while (m_running)
